@@ -19,3 +19,13 @@ export enum EventsEnum {
   emailVerification = "EmailVerification",
   forgetPassword = "ForgetPassword",
 }
+
+export enum GenderEnum {
+  male = "Male",
+  female = "Female",
+}
+
+export enum ProvidersEnum {
+  local = "Local",
+  google = "Google",
+}

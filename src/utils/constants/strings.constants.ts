@@ -27,6 +27,19 @@ class StringConstants {
   static readonly USE_FORGET_PASSWORD_OTP_MESSAGE =
     "Please use the OTP below to verify your Forget Password Attempt.";
 
+  static readonly INVALID_EMAIL_MESSAGE = "Invalid email address ✉️❌";
+
+  static readonly NAME_VALIDATION_MESSAGE =
+    "Full name must be at least 2 words, each starting with a capital letter and 2-25 characters long 📛";
+
+  static readonly PASSWORD_VALIDATION_MESSAGE =
+    "Password must be at least 8 characters long, include at least one uppercase letter, one lowercase letter, one number and one special character 🔑";
+
+  static readonly MISMATCH_CONFIRM_PASSWORD_MESSAGE =
+    "confirmPassword mismatch password ☹️";
+
+  static readonly BODY_REQUIRED_MESSAGE = "Body parameters are required 🚫";
+
   static WRONG_ROUTE_MESSAGE(req: Request): string {
     return `Wrong URI ${req.url} or METHOD ${req.method} ⛔`;
   }
@@ -41,6 +54,10 @@ class StringConstants {
 
   static FAILED_EXECUTING_EVENT_MESSAGE(eventName: string, e: Error): string {
     return `Failed Executing ${eventName} Event ⚠️. Error: ${e}`;
+  }
+
+  static PATH_REQUIRED_MESSAGE(pathName: string): string {
+    return `${pathName} is required 🚫`;
   }
 }
 export default StringConstants;

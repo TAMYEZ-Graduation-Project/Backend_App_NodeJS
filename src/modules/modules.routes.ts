@@ -1,13 +1,14 @@
 import { Router } from "express";
+import authRouter from "./auth/auth.controller.ts";
 
 const modulesRouter: Router = Router();
 
 modulesRouter.get("/", (req, res) => {
-  res
-    .status(200)
-    .json({
-      message: `Welcome to Our Graduation Project ${process.env.APP_NAME} ❤️ 🎓`,
-    });
+  res.status(200).json({
+    message: `Welcome to Our Graduation Project ${process.env.APP_NAME} ❤️ 🎓`,
+  });
 });
+
+modulesRouter.use("/auth", authRouter);
 
 export default modulesRouter;

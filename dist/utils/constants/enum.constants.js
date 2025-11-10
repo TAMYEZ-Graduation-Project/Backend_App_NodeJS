@@ -20,3 +20,13 @@ export var EventsEnum;
     EventsEnum["emailVerification"] = "EmailVerification";
     EventsEnum["forgetPassword"] = "ForgetPassword";
 })(EventsEnum || (EventsEnum = {}));
+export var GenderEnum;
+(function (GenderEnum) {
+    GenderEnum["male"] = "Male";
+    GenderEnum["female"] = "Female";
+})(GenderEnum || (GenderEnum = {}));
+export var ProvidersEnum;
+(function (ProvidersEnum) {
+    ProvidersEnum["local"] = "Local";
+    ProvidersEnum["google"] = "Google";
+})(ProvidersEnum || (ProvidersEnum = {}));
