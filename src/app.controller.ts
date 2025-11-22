@@ -10,6 +10,8 @@ import { ProjectMoodsEnum } from "./utils/constants/enum.constants.ts";
 import StringConstants from "./utils/constants/strings.constants.ts";
 import globalErrorHandler from "./utils/handlers/global_error.handler.ts";
 import RoutePaths from "./utils/constants/route_paths.constants.ts";
+import UserModel from "./db/models/user.model.ts";
+import protocolAndHostHanlder from "./utils/handlers/protocol_host.handler.ts";
 
 async function bootstrap() {
   const app: Express = express();
@@ -35,6 +37,8 @@ async function bootstrap() {
     });
   } else {
     // Routes
+    await UserModel.syncIndexes();
+    app.use(protocolAndHostHanlder);
     app.use(express.json());
     app.use([RoutePaths.SLASH_PATH, RoutePaths.API_V1_PATH], modulesRouter);
     app.use(RoutePaths.ALL_PATH, (req: Request, res: Response) => {

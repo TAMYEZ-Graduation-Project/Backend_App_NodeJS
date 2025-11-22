@@ -9,6 +9,8 @@ import { ProjectMoodsEnum } from "./utils/constants/enum.constants.js";
 import StringConstants from "./utils/constants/strings.constants.js";
 import globalErrorHandler from "./utils/handlers/global_error.handler.js";
 import RoutePaths from "./utils/constants/route_paths.constants.js";
+import UserModel from "./db/models/user.model.js";
+import protocolAndHostHanlder from "./utils/handlers/protocol_host.handler.js";
 async function bootstrap() {
     const app = express();
     app.use(cors());
@@ -26,6 +28,8 @@ async function bootstrap() {
         });
     }
     else {
+        await UserModel.syncIndexes();
+        app.use(protocolAndHostHanlder);
         app.use(express.json());
         app.use([RoutePaths.SLASH_PATH, RoutePaths.API_V1_PATH], modulesRouter);
         app.use(RoutePaths.ALL_PATH, (req, res) => {
