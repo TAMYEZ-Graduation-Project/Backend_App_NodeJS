@@ -6,7 +6,7 @@ class RoutePaths {
   // uploads routes
   static readonly uploads = "/uploads";
   static readonly getFileFromSubKey = "/*path";
-  static readonly getFileFromSubKeyByPresignedUrl = "/uploads";
+  static readonly getFileFromSubKeyByPresignedUrl = "/presignd-url/*path";
 
   // auth routes
   static readonly auth = "/auth";

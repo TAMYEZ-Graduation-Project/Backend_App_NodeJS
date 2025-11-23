@@ -4,7 +4,7 @@ class RoutePaths {
     static SLASH_PATH = "/";
     static uploads = "/uploads";
     static getFileFromSubKey = "/*path";
-    static getFileFromSubKeyByPresignedUrl = "/uploads";
+    static getFileFromSubKeyByPresignedUrl = "/presignd-url/*path";
     static auth = "/auth";
     static signUp = "/sign-up";
     static logIn = "/log-in";
