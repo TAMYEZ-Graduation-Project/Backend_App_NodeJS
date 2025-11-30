@@ -88,7 +88,7 @@ class QuizService {
     });
 
     if (!quiz) {
-      throw new NotFoundException(StringConstants.INVALID_ID_MESSAGE("quizId"));
+      throw new NotFoundException(StringConstants.INVALID_PARAMETER_MESSAGE("quizId"));
     }
 
     const uniqueKey = QuizUtil.getQuizUniqueKey({
@@ -148,16 +148,24 @@ class QuizService {
       projection.tags = 0;
     }
 
+    const filter: { _id?: string; uniqueKey?: Record<any, any> } = {};
+    quizId === QuizTypesEnum.careerAssesment
+      ? (filter.uniqueKey = {
+          $regex: StringConstants.CAREER_ASSESSMENT,
+          $options: "i",
+        })
+      : (filter._id = quizId);
+
     const quiz = await this._quizRepository.findOne({
       filter: {
-        _id: quizId,
+        ...filter,
         paranoid: req.user!.role !== RolesEnum.user ? false : true,
       },
       projection,
     });
 
     if (!quiz) {
-      throw new NotFoundException(StringConstants.INVALID_ID_MESSAGE("quizId"));
+      throw new NotFoundException(StringConstants.INVALID_PARAMETER_MESSAGE("quizId"));
     }
 
     return successHandler<IGetQuizDetailsResponse>({ res, body: { quiz } });
@@ -166,15 +174,23 @@ class QuizService {
   getQuizQuestions = async (req: Request, res: Response): Promise<Response> => {
     const { quizId } = req.params as GetQuizParamsDtoType;
 
+    const filter: { _id?: string; uniqueKey?: Record<any, any> } = {};
+    quizId === QuizTypesEnum.careerAssesment
+      ? (filter.uniqueKey = {
+          $regex: StringConstants.CAREER_ASSESSMENT,
+          $options: "i",
+        })
+      : (filter._id = quizId);
+
     const quiz = await this._quizRepository.findOne({
       filter: {
-        _id: quizId,
+        ...filter,
         paranoid: req.user!.role !== RolesEnum.user ? false : true,
       },
     });
 
     if (!quiz) {
-      throw new NotFoundException(StringConstants.INVALID_ID_MESSAGE("quizId"));
+      throw new NotFoundException(StringConstants.INVALID_PARAMETER_MESSAGE("quizId"));
     }
 
     return successHandler({

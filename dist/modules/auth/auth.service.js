@@ -42,7 +42,7 @@ class AuthService {
                 {
                     fullName,
                     email,
-                    password: await HashingSecurityUtil.hashText({ plainText: password }),
+                    password,
                     gender,
                     phoneNumber,
                     confirmEmailLink: {

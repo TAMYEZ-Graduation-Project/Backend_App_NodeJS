@@ -18,10 +18,13 @@ class RoutePaths {
     static user = "/user";
     static userProfile = "/";
     static profilePicture = "/profile-picture";
+    static updateProfile = "/";
+    static changePassword = "/change-password";
     static quiz = "/quiz";
     static getQuizDetails = "/:quizId";
     static getQuizQuestions = "/questions/:quizId";
-    static createQuiz = "/";
-    static updateQuiz = "/:quizId";
+    static checkQuizAnswers = "/";
+    static createQuiz = "/admin/";
+    static updateQuiz = "/admin/:quizId";
 }
 export default RoutePaths;

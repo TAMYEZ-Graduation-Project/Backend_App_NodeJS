@@ -10,16 +10,28 @@ const generalValidationConstants = {
     (value) => {
       return Types.ObjectId.isValid(value);
     },
-    { error: StringConstants.INVALID_ID_MESSAGE() }
+    { error: StringConstants.INVALID_PARAMETER_MESSAGE() }
   ),
+  name: z
+    .string({ error: StringConstants.PATH_REQUIRED_MESSAGE("name") })
+    .regex(AppRegex.nameRegex, StringConstants.NAME_VALIDATION_MESSAGE),
+
   fullName: z
     .string({ error: StringConstants.PATH_REQUIRED_MESSAGE("fullName") })
-    .regex(AppRegex.fullNameRegex, StringConstants.NAME_VALIDATION_MESSAGE),
+    .regex(
+      AppRegex.fullNameRegex,
+      StringConstants.FULL_NAME_VALIDATION_MESSAGE
+    ),
 
   email: z.email(StringConstants.INVALID_EMAIL_MESSAGE),
-  password: z
-    .string({ error: StringConstants.PATH_REQUIRED_MESSAGE("password") })
-    .regex(AppRegex.passwordRegex, StringConstants.PASSWORD_VALIDATION_MESSAGE),
+  password: (fieldName: string = "password") => {
+    return z
+      .string({ error: StringConstants.PATH_REQUIRED_MESSAGE(fieldName) })
+      .regex(
+        AppRegex.passwordRegex,
+        StringConstants.PASSWORD_VALIDATION_MESSAGE
+      );
+  },
 
   otp: z
     .string({ error: StringConstants.PATH_REQUIRED_MESSAGE("otp") })

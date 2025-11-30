@@ -6,5 +6,8 @@ class EncryptionSecurityUtil {
     static decryptText = ({ cipherText, secretKey = process.env.ENCRYPTION_KEY, }) => {
         return CryptoJS.AES.decrypt(cipherText, secretKey).toString(CryptoJS.enc.Utf8);
     };
+    static isEncrypted = ({ text }) => {
+        return typeof text === "string" && text.startsWith("U2FsdGVkX1");
+    };
 }
 export default EncryptionSecurityUtil;

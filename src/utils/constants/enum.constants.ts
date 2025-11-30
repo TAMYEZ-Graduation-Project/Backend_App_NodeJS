@@ -71,3 +71,9 @@ export enum QuizTypesEnum {
   careerAssesment = "CareerAssesment",
   stepQuiz = "StepQuiz",
 }
+
+export enum LogoutFlagsEnum {
+  all = "All",
+  one = "One",
+  stay = "Stay",
+}

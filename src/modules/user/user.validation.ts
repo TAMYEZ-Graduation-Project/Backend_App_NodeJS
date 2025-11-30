@@ -3,6 +3,7 @@ import generalValidationConstants from "../../utils/constants/validation.constan
 import fileValidation from "../../utils/multer/file_validation.multer.ts";
 import StringConstants from "../../utils/constants/strings.constants.ts";
 import EnvFields from "../../utils/constants/env_fields.constants.ts";
+import { LogoutFlagsEnum } from "../../utils/constants/enum.constants.ts";
 
 class UserValidators {
   static uploadProfilePicture = {
@@ -13,6 +14,55 @@ class UserValidators {
         mimetype: fileValidation.image,
       }),
     }),
+  };
+
+  static updateProfile = {
+    body: z
+      .strictObject({
+        firstName: generalValidationConstants.name.optional(),
+        lastName: generalValidationConstants.name.optional(),
+        phoneNumber: generalValidationConstants.phoneNumber.optional(),
+      })
+      .superRefine((data, ctx) => {
+        if (!Object.values(data).length) {
+          ctx.addIssue({
+            code: "custom",
+            path: [""],
+            message: "All fields are empty ❌",
+          });
+        }
+      }),
+  };
+
+  static changePassword = {
+    body: z
+      .strictObject({
+        currentPassword: generalValidationConstants.password("currentPassword"),
+        newPassword: generalValidationConstants.password("newPassword"),
+        confirmPassword: generalValidationConstants.password("confirmPassword"),
+        flag: z
+          .enum(Object.values(LogoutFlagsEnum))
+          .optional()
+          .default(LogoutFlagsEnum.stay),
+      })
+      .superRefine((data, ctx) => {
+
+        if(data.currentPassword == data.newPassword){
+          ctx.addIssue({
+            code:"custom",
+            path:["newPassword"],
+            message: "Current and New passwords shouldn't be the same 🔑☹️"
+          })
+        }
+
+        generalValidationConstants.confirmPasswordChecker(
+          {
+            password: data.newPassword,
+            confirmPassword: data.confirmPassword,
+          },
+          ctx
+        );
+      }),
   };
 }
 

@@ -1,4 +1,6 @@
 class AppRegex {
+  static readonly nameRegex = /^[A-Z][a-z]{1,24}$/;
+
   static readonly fullNameRegex = /^[A-Z][a-z]{1,24}\s[A-Z][a-z]{1,24}$/;
 
   static readonly passwordRegex =

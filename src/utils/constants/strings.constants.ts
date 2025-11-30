@@ -41,6 +41,9 @@ class StringConstants {
     "Invalid login credentials 🪪";
 
   static readonly NAME_VALIDATION_MESSAGE =
+    "Name must start with a capital letter and 2-25 characters long 📛";
+
+  static readonly FULL_NAME_VALIDATION_MESSAGE =
     "Full name must be at least 2 words, each starting with a capital letter and 2-25 characters long 📛";
 
   static readonly PASSWORD_VALIDATION_MESSAGE =
@@ -131,6 +134,8 @@ class StringConstants {
 
   static readonly INVALID_DURATION_EXIST_MESSAGE = `${QuizTypesEnum.careerAssesment} must not have a duration value 🕛`;
 
+  static readonly FAILED_REVOKE_TOKEN_MESSAGE = "Failed to revoke Token(s) ☠️";
+
   static readonly CAREER_ASSESSMENT = "Career Assessment";
 
   static WRONG_ROUTE_MESSAGE(req: Request): string {
@@ -164,8 +169,8 @@ class StringConstants {
     return `Invalid file mimeType 📁❌! Allowd types are ${allowedMimeTypes}`;
   }
 
-  static INVALID_ID_MESSAGE(idName: string = "id"): string {
-    return `Invalid ${idName} 🆔`;
+  static INVALID_PARAMETER_MESSAGE(idName: string = "id"): string {
+    return `Invalid ${idName} ❌`;
   }
 
   static INVALID_ENUM_VALUE_MESSAGE({

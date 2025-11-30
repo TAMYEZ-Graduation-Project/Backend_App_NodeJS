@@ -74,7 +74,7 @@ quizSchema.methods.toJSON = function () {
   return {
     id: quizObject.id,
     title: quizObject.title,
-    describe: quizObject.description,
+    description: quizObject.description,
     aiPrompt: quizObject.aiPrompt,
     type: quizObject.type,
     duration: quizObject.duration,

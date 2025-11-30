@@ -8,8 +8,14 @@ import {
 import ModelsNames from "../../utils/constants/models.names.ts";
 import { softDeleteFunction } from "../../utils/soft_delete/soft_delete.ts";
 import DocumentFormat from "../../utils/formats/document.format.ts";
-import { atByObjectSchema, codeExpireCountObjectSchema, profilePictureObjectSchema } from "./common_schemas.model.ts";
-
+import {
+  atByObjectSchema,
+  codeExpireCountObjectSchema,
+  profilePictureObjectSchema,
+} from "./common_schemas.model.ts";
+import HashingSecurityUtil from "../../utils/security/hash.security.ts";
+import EncryptionSecurityUtil from "../../utils/security/encryption.security.ts";
+import type { UpdateQuery } from "mongoose";
 
 const userSchema = new mongoose.Schema<IUser>(
   {
@@ -124,10 +130,86 @@ userSchema.methods.toJSON = function () {
   };
 };
 
+userSchema.pre("save", async function (next) {
+  if (
+    this.isModified("password") &&
+    !HashingSecurityUtil.isHashed({ text: this.password })
+  ) {
+    this.password = await HashingSecurityUtil.hashText({
+      plainText: this.password,
+    });
+  }
+
+  if (
+    this.isModified("phoneNumber") &&
+    !EncryptionSecurityUtil.isEncrypted({ text: this.phoneNumber })
+  ) {
+    this.phoneNumber = EncryptionSecurityUtil.encryptText({
+      plainText: this.phoneNumber,
+    });
+  }
+
+  console.log({doc: this});
+  
+  next();
+});
+
+userSchema.pre(["updateOne", "findOneAndUpdate"], async function () {
+  const updateObject = this.getUpdate() as UpdateQuery<IUser>;
+
+  if (
+    updateObject?.password &&
+    !HashingSecurityUtil.isHashed({ text: updateObject.password })
+  ) {
+    updateObject.password = await HashingSecurityUtil.hashText({
+      plainText: updateObject.password,
+    });
+  }
+
+  if (
+    updateObject?.phoneNumber &&
+    !EncryptionSecurityUtil.isEncrypted({ text: updateObject.phoneNumber })
+  ) {
+    updateObject.phoneNumber = EncryptionSecurityUtil.encryptText({
+      plainText: updateObject.phoneNumber,
+    });
+  }
+
+  this.setUpdate(updateObject); // ✅ Correct method
+});
+
 userSchema.pre(
   ["find", "findOne", "findOneAndUpdate", "countDocuments"],
   function (next) {
     softDeleteFunction(this);
+
+    next();
+  }
+);
+
+userSchema.post(
+  ["find", "findOne", "findOneAndUpdate", "countDocuments"],
+   function (this, docs, next) {
+    // docs is an array for 'find', or a single document for 'findOne'
+
+    if (!docs) return next();
+
+    const decryptPhone = (doc: any) => {
+      if (
+        doc.phoneNumber &&
+        EncryptionSecurityUtil.isEncrypted({ text: doc.phoneNumber })
+      ) {
+        doc.phoneNumber = EncryptionSecurityUtil.decryptText({
+          cipherText: doc.phoneNumber,
+        });
+      }
+    };
+
+    if (Array.isArray(docs)) {
+      docs.forEach(decryptPhone);
+    } else {
+      decryptPhone(docs);
+    }
 
     next();
   }

@@ -24,13 +24,16 @@ class RoutePaths {
   static readonly user = "/user";
   static readonly userProfile = "/";
   static readonly profilePicture = "/profile-picture";
+  static readonly updateProfile = "/";
+  static readonly changePassword = "/change-password";
 
   // quiz routes
   static readonly quiz = "/quiz";
   static readonly getQuizDetails = "/:quizId";
   static readonly getQuizQuestions = "/questions/:quizId";
-  static readonly createQuiz = "/";
-  static readonly updateQuiz = "/:quizId";
+  static readonly checkQuizAnswers = "/"
+  static readonly createQuiz = "/admin/";
+  static readonly updateQuiz = "/admin/:quizId";
 }
 
 export default RoutePaths;

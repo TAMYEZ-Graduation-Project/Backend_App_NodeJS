@@ -72,3 +72,9 @@ export var QuizTypesEnum;
     QuizTypesEnum["careerAssesment"] = "CareerAssesment";
     QuizTypesEnum["stepQuiz"] = "StepQuiz";
 })(QuizTypesEnum || (QuizTypesEnum = {}));
+export var LogoutFlagsEnum;
+(function (LogoutFlagsEnum) {
+    LogoutFlagsEnum["all"] = "All";
+    LogoutFlagsEnum["one"] = "One";
+    LogoutFlagsEnum["stay"] = "Stay";
+})(LogoutFlagsEnum || (LogoutFlagsEnum = {}));

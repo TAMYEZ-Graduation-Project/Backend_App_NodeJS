@@ -173,7 +173,12 @@ class QuizValidators {
         }),
     };
     static getQuiz = {
-        params: this.updateQuiz.params
+        params: z.strictObject({
+            quizId: z.union([
+                z.literal(QuizTypesEnum.careerAssesment),
+                generalValidationConstants.objectId,
+            ]),
+        }),
     };
 }
 export default QuizValidators;

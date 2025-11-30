@@ -31,4 +31,18 @@ userRouter.patch(
   userService.uploadProfilePicture
 );
 
+userRouter.patch(
+  RoutePaths.updateProfile,
+  Auths.authenticationMiddleware(),
+  validationMiddleware({ schema: UserValidators.updateProfile }),
+  userService.updateProfile
+);
+
+userRouter.patch(
+  RoutePaths.changePassword,
+  Auths.authenticationMiddleware(),
+  validationMiddleware({ schema: UserValidators.changePassword }),
+  userService.changePassword
+);
+
 export default userRouter;

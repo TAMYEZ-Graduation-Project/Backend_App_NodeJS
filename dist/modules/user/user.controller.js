@@ -16,4 +16,6 @@ userRouter.patch(RoutePaths.profilePicture, Auths.authenticationMiddleware(), Cl
     maxFileSize: Number(process.env[EnvFields.PROFILE_PICTURE_SIZE]),
     validation: fileValidation.image,
 }), validationMiddleware({ schema: UserValidators.uploadProfilePicture }), userService.uploadProfilePicture);
+userRouter.patch(RoutePaths.updateProfile, Auths.authenticationMiddleware(), validationMiddleware({ schema: UserValidators.updateProfile }), userService.updateProfile);
+userRouter.patch(RoutePaths.changePassword, Auths.authenticationMiddleware(), validationMiddleware({ schema: UserValidators.changePassword }), userService.changePassword);
 export default userRouter;

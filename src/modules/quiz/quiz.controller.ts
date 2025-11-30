@@ -25,6 +25,13 @@ quizRouter.get(
 )
 
 quizRouter.post(
+  RoutePaths.checkQuizAnswers,
+  Auths.combined({ accessRoles: endpointsAuthorization.createQuiz }),
+  validationMiddleware({ schema: QuizValidators.createQuiz }),
+  quizService.createQuiz
+);
+
+quizRouter.post(
   RoutePaths.createQuiz,
   Auths.combined({ accessRoles: endpointsAuthorization.createQuiz }),
   validationMiddleware({ schema: QuizValidators.createQuiz }),
