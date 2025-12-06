@@ -65,20 +65,21 @@ export interface IAIModelGeneratedQuestionsResponse {
     text: string;
     options?: string[] | undefined;
     correctAnswer?: string | string[] | undefined;
+    explanation?: string | undefined;
   }[];
 }
 
 export interface IAIModelCheckWrittenQuestionsRequest
   extends IAIModelGeneratedQuestionsRequest {
   writtenAnswers: {
-    questionId: Types.ObjectId;
+    questionId: string;
     userAnswer: string;
   }[];
 }
 
 export interface IAIModelCheckWrittenQuestionsResponse {
-  questionId: Types.ObjectId;
-  isCorrection: boolean;
+  questionId: string;
+  isCorrect: boolean;
   correction?: string; // "This is the correction of user answer (5000)"
   explenation?: string; // "This is the explenation of the correction (1000)"
 }

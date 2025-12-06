@@ -7,6 +7,7 @@ export interface IQuestion {
   type: QuestionTypesEnum;
   options?: string[] | undefined;
   correctAnswer?: string | string[] | undefined;
+  explanation?: string | undefined;
 }
 
 export type FullIQuestion = Require_id<Default__v<IQuestion>>;
@@ -21,7 +22,7 @@ export interface IQuizQuestions {
   userId: Types.ObjectId;
 
   writtenQuestionsIndexes?: number[];
-  correctAnswersMap: Map<string, string | string[]>;
+  answersMap: Map<string, QuestionTypesEnum>;
 
   questions: IQuestion[];
   

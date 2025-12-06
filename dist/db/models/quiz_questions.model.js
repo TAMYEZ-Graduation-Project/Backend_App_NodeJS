@@ -46,6 +46,13 @@ const questionSchema = new mongoose.Schema({
             message: "correctAnswer type does not match question type ❌",
         },
     },
+    explanation: {
+        type: String,
+        maxlength: 500,
+        required: function () {
+            return this.type !== QuestionTypesEnum.written;
+        },
+    },
 }, {
     strictQuery: true,
     toObject: { virtuals: true },
@@ -77,13 +84,11 @@ const quizQuestionsSchema = new mongoose.Schema({
             return Boolean(this.questions.find((value) => value.type === QuestionTypesEnum.written));
         },
     },
-    correctAnswersMap: {
+    answersMap: {
         type: Map,
         validate: {
             validator: function (val) {
-                return (typeof val === "string" ||
-                    (Array.isArray(val) &&
-                        val.every((item) => typeof item === "string")));
+                return Object.values(QuestionTypesEnum).includes(val);
             },
             message: "Invalid answer type ❌",
         },
@@ -110,14 +115,9 @@ quizQuestionsSchema.pre("save", function (next) {
         return next();
     const entries = [];
     for (const question of this.questions) {
-        if (question.type !== QuestionTypesEnum.written) {
-            entries.push([
-                question._id.toString(),
-                question.correctAnswer,
-            ]);
-        }
+        entries.push([question._id.toString(), question.type]);
     }
-    this.correctAnswersMap = new Map(entries);
+    this.answersMap = new Map(entries);
     next();
 });
 const QuizQuestionsModel = mongoose.models.QuizQuestions ||

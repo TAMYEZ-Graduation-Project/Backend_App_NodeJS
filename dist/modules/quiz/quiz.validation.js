@@ -185,16 +185,56 @@ class QuizValidators {
         params: z.strictObject({ quizId: generalValidationConstants.objectId }),
         body: z.strictObject({
             answers: z
-                .array(z.strictObject({
+                .array(z
+                .strictObject({
                 questionId: generalValidationConstants.objectId,
                 type: z.enum(Object.values(QuestionTypesEnum)),
-                answerIndex: z
-                    .number({
-                    error: StringConstants.PATH_REQUIRED_MESSAGE("answerIndex"),
-                })
-                    .int({ message: "answerIndex must be an integer ❌" })
-                    .min(0)
-                    .max(3),
+                answer: z.union([
+                    z.string().min(1).max(5_000),
+                    z
+                        .number({
+                        error: StringConstants.PATH_REQUIRED_MESSAGE("answerIndex"),
+                    })
+                        .int({ message: "answerIndex must be an integer ❌" })
+                        .min(-1)
+                        .max(3),
+                    z.array(z
+                        .number({
+                        error: StringConstants.PATH_REQUIRED_MESSAGE("answerIndex"),
+                    })
+                        .int({ message: "answerIndex must be an integer ❌" })
+                        .min(0)
+                        .max(3)),
+                ]),
+            })
+                .superRefine((data, ctx) => {
+                if (data.type === QuestionTypesEnum.written) {
+                    if (typeof data.answer !== "string") {
+                        ctx.addIssue({
+                            code: "custom",
+                            path: ["answer"],
+                            message: `For question type ${QuestionTypesEnum.written}, answer must be a string ❌`,
+                        });
+                    }
+                }
+                else if (data.type === QuestionTypesEnum.mcqMulti) {
+                    if (!Array.isArray(data.answer)) {
+                        ctx.addIssue({
+                            code: "custom",
+                            path: ["answer"],
+                            message: `For question type ${QuestionTypesEnum.mcqMulti}, answer must be an array of answerIndex numbers ❌`,
+                        });
+                    }
+                }
+                else {
+                    if (typeof data.answer !== "number") {
+                        ctx.addIssue({
+                            code: "custom",
+                            path: ["answer"],
+                            message: `For question type ${QuestionTypesEnum.mcqSingle}, answer must be an answerIndex number ❌`,
+                        });
+                    }
+                }
             }))
                 .min(2)
                 .max(200),

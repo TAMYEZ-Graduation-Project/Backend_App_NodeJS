@@ -24,7 +24,7 @@ class RoutePaths {
     static quiz = "/quiz";
     static getQuizDetails = "/:quizId";
     static getQuizQuestions = "/questions/:quizId";
-    static checkQuizAnswers = "/";
+    static checkQuizAnswers = "/:quizId";
     static createQuiz = "/admin/";
     static updateQuiz = "/admin/:quizId";
 }

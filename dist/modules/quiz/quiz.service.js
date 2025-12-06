@@ -7,6 +7,7 @@ import StringConstants from "../../utils/constants/strings.constants.js";
 import QuizUtil from "../../utils/quiz/utils.quiz.js";
 import UpdateUtil from "../../utils/update/util.update.js";
 import EnvFields from "../../utils/constants/env_fields.constants.js";
+import makeCompleter from "../../utils/completer/make.completer.js";
 class QuizService {
     _quizRepository = new QuizRepository(QuizModel);
     _quizQuestionsRepository = new QuizQuestionsRepository(QuizQuestionsModel);
@@ -124,12 +125,14 @@ class QuizService {
                     text: "Which data structure uses LIFO (Last In, First Out) principle?",
                     options: ["Queue", "Stack", "Array", "Linked List"],
                     correctAnswer: "Stack",
+                    explanation: "A stack follows the LIFO principle, meaning the last element added is the first to be removed.",
                 },
                 {
                     type: "mcq-single",
                     text: "What is the time complexity of binary search in a sorted array?",
                     options: ["O(n)", "O(log n)", "O(n log n)", "O(1)"],
                     correctAnswer: "O(log n)",
+                    explanation: "Binary search halves the search space each time, resulting in logarithmic complexity O(log n).",
                 },
                 {
                     type: "mcq-multi",
@@ -141,6 +144,7 @@ class QuizService {
                         "Relational",
                     ],
                     correctAnswer: ["Object-Oriented", "Functional", "Procedural"],
+                    explanation: "Object-Oriented, Functional, and Procedural are paradigms; Relational refers to databases, not a paradigm.",
                 },
                 {
                     type: "written",
@@ -156,6 +160,7 @@ class QuizService {
                         "Bellman-Ford",
                     ],
                     correctAnswer: "Dijkstra's Algorithm",
+                    explanation: "Dijkstra's algorithm efficiently finds the shortest path from a source to all other nodes in a weighted graph.",
                 },
                 {
                     type: "mcq-single",
@@ -167,12 +172,14 @@ class QuizService {
                         "Standard Query Language",
                     ],
                     correctAnswer: "Structured Query Language",
+                    explanation: "SQL stands for Structured Query Language, used for managing and querying relational databases.",
                 },
                 {
                     type: "mcq-multi",
                     text: "Which of the following are NoSQL databases?",
                     options: ["MongoDB", "PostgreSQL", "Cassandra", "Redis"],
                     correctAnswer: ["MongoDB", "Cassandra", "Redis"],
+                    explanation: "MongoDB, Cassandra, and Redis are NoSQL databases; PostgreSQL is a relational database.",
                 },
                 {
                     type: "written",
@@ -183,6 +190,7 @@ class QuizService {
                     text: "Which of these is NOT a valid HTTP method?",
                     options: ["GET", "POST", "FETCH", "DELETE"],
                     correctAnswer: "FETCH",
+                    explanation: "GET, POST, and DELETE are valid HTTP methods; FETCH is not an HTTP method but a JavaScript API.",
                 },
                 {
                     type: "written",
@@ -249,32 +257,45 @@ class QuizService {
             },
         });
     };
-    _checkWrittenQuestionsAnswers = async ({ title, aiPrompt, writtenAnswers, }) => {
-        const response = [];
-        for (const answer of writtenAnswers) {
-            if (answer.userAnswer.includes("correct")) {
-                response.push({
-                    questionId: answer.questionId,
-                    isCorrection: true,
-                });
+    _checkWrittenQuestionsAnswers = async ({ resolve, title, aiPrompt, writtenAnswers, }) => {
+        return new Promise((res) => {
+            const response = [];
+            for (const answer of writtenAnswers) {
+                if (answer.userAnswer.includes("correct")) {
+                    response.push({
+                        questionId: answer.questionId,
+                        isCorrect: true,
+                    });
+                }
+                else {
+                    response.push({
+                        questionId: answer.questionId,
+                        isCorrect: false,
+                        correction: "This is the correction of user answer",
+                        explenation: "This is the explanation of user answer",
+                    });
+                }
             }
-            else {
-                response.push({
-                    questionId: answer.questionId,
-                    isCorrection: false,
-                    correction: "This is the correction of user answer",
-                    explenation: "This is the explanation of user answer",
-                });
-            }
-        }
-        return response;
+            res(response);
+            resolve();
+        });
     };
     checkQuizAnswers = async (req, res) => {
+        console.log(this._checkWrittenQuestionsAnswers);
         const { quizId } = req.params;
         const { answers } = req.validationResult
             .body;
         const quizQuestions = await this._quizQuestionsRepository.findOne({
             filter: { quizId, userId: req.user._id },
+            options: {
+                populate: [
+                    {
+                        path: "quizId",
+                        match: { freezed: { $exists: false } },
+                        select: "title aiPrompt",
+                    },
+                ],
+            },
         });
         if (!quizQuestions) {
             throw new NotFoundException("Quiz questions not found for the given quizId and user 🚫");
@@ -282,18 +303,73 @@ class QuizService {
         if (answers.length !== quizQuestions.questions.length) {
             throw new ValidationException("Number of answers provided does not match number of questions ❌");
         }
-        const checkedAnswers = [];
+        const writtenAnswers = [];
         for (const answer of answers) {
-            const question = quizQuestions.questions.find((value) => value.id?.equals(answer.questionId));
-            if (!question) {
+            const questionType = quizQuestions.answersMap.get(answer.questionId);
+            if (!questionType) {
                 throw new NotFoundException("Not found questionId in the quiz questions ❌");
             }
-            const selectedAnswer = question.options[answer.answerIndex];
+            else if (questionType && questionType !== answer.type) {
+                throw new ValidationException(`Question type mismatch for questionId ${answer.questionId} ❌`);
+            }
+            if (answer.type === QuestionTypesEnum.written) {
+                writtenAnswers.push({
+                    questionId: answer.questionId,
+                    userAnswer: answer.answer,
+                });
+            }
+        }
+        const gate = makeCompleter();
+        const writtenAnswersResults = await this._checkWrittenQuestionsAnswers({
+            resolve: gate.resolve,
+            title: quizQuestions.quizId.title,
+            aiPrompt: quizQuestions.quizId.aiPrompt,
+            writtenAnswers,
+        });
+        const checkedAnswers = [];
+        let wrongAnswersCount = 0;
+        for (const answer of answers) {
+            const question = quizQuestions.questions.find((value) => value.id?.equals(answer.questionId));
+            if (question.type === QuestionTypesEnum.written)
+                continue;
+            const selectedAnswer = answer.answer < 0
+                ? ""
+                : question.options[answer.answer];
+            const { correctAnswer, explanation, ...rest } = question;
             if (selectedAnswer == question.correctAnswer) {
-                checkedAnswers.push({ ...question });
+                checkedAnswers.push({ ...rest, correctAnswer: selectedAnswer });
             }
             else {
-                checkedAnswers.push({ ...question, wrongAnswer: selectedAnswer });
+                wrongAnswersCount++;
+                checkedAnswers.push({
+                    ...rest,
+                    wrongAnswer: selectedAnswer,
+                    correction: correctAnswer,
+                    explanation,
+                });
+            }
+        }
+        await gate.promise;
+        for (const writtenAnswerResult of writtenAnswersResults) {
+            let index;
+            const question = quizQuestions.questions.find((value, i) => {
+                index = i;
+                return value.id?.equals(writtenAnswerResult.questionId);
+            });
+            if (writtenAnswerResult.isCorrect) {
+                checkedAnswers.splice(index, 0, {
+                    ...question,
+                    correctAnswer: writtenAnswers.find((wa) => wa.questionId === writtenAnswerResult.questionId).userAnswer,
+                });
+            }
+            else {
+                wrongAnswersCount++;
+                checkedAnswers.splice(index, 0, {
+                    ...question,
+                    wrongAnswer: writtenAnswers.find((wa) => wa.questionId === writtenAnswerResult.questionId).userAnswer,
+                    correction: writtenAnswerResult.correction,
+                    explanation: writtenAnswerResult.explenation,
+                });
             }
         }
         return successHandler({

@@ -32,7 +32,7 @@ class RoutePaths {
   static readonly quiz = "/quiz";
   static readonly getQuizDetails = "/:quizId";
   static readonly getQuizQuestions = "/questions/:quizId";
-  static readonly checkQuizAnswers = "/"
+  static readonly checkQuizAnswers = "/:quizId";
   static readonly createQuiz = "/admin/";
   static readonly updateQuiz = "/admin/:quizId";
 }
