@@ -1,6 +1,7 @@
 import type { TokenMessage } from "firebase-admin/messaging";
 import { firebaseAdmin } from "../../index.ts";
 
+
 class NotificationService {
   sendNotification = async ({
     deviceToken,
