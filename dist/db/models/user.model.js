@@ -3,7 +3,13 @@ import { GenderEnum, ProvidersEnum, RolesEnum, } from "../../utils/constants/enu
 import ModelsNames from "../../utils/constants/models.names.js";
 import { softDeleteFunction } from "../../utils/soft_delete/soft_delete.js";
 import DocumentFormat from "../../utils/formats/document.format.js";
-import { atByObjectSchema, codeExpireCountObjectSchema, profilePictureObjectSchema } from "./common_schemas.model.js";
+import { atByObjectSchema, codeExpireCountObjectSchema, idSelectedAtObjectSchema, profilePictureObjectSchema, } from "./common_schemas.model.js";
+import HashingSecurityUtil from "../../utils/security/hash.security.js";
+import EncryptionSecurityUtil from "../../utils/security/encryption.security.js";
+const quizAttemptsSchema = new mongoose.Schema({
+    count: { type: Number, required: true, min: 0, max: 5 },
+    lastAttempt: { type: Date, required: true },
+}, { _id: false });
 const userSchema = new mongoose.Schema({
     firstName: { type: String, required: true, minlength: 2, maxlength: 25 },
     lastName: { type: String, required: true, minlength: 2, maxlength: 25 },
@@ -56,11 +62,8 @@ const userSchema = new mongoose.Schema({
     profilePicture: {
         type: profilePictureObjectSchema,
     },
-    coverImages: [String],
-    education: { type: String },
-    skills: { type: [String], default: [] },
-    coursesAndCertifications: { type: [String], default: [] },
-    careerPathId: { type: mongoose.Schema.Types.ObjectId, ref: "CareerPath" },
+    careerPath: { type: idSelectedAtObjectSchema },
+    quizAttempts: quizAttemptsSchema,
     freezed: atByObjectSchema,
     restored: atByObjectSchema,
 }, {
@@ -97,8 +100,58 @@ userSchema.methods.toJSON = function () {
         confirmedAt: userObject.confirmedAt,
     };
 };
+userSchema.pre("save", async function (next) {
+    if (this.isModified("password") &&
+        !HashingSecurityUtil.isHashed({ text: this.password })) {
+        this.password = await HashingSecurityUtil.hashText({
+            plainText: this.password,
+        });
+    }
+    if (this.isModified("phoneNumber") &&
+        !EncryptionSecurityUtil.isEncrypted({ text: this.phoneNumber })) {
+        this.phoneNumber = EncryptionSecurityUtil.encryptText({
+            plainText: this.phoneNumber,
+        });
+    }
+    next();
+});
+userSchema.pre(["updateOne", "findOneAndUpdate"], async function () {
+    const updateObject = this.getUpdate();
+    if (updateObject?.password &&
+        !HashingSecurityUtil.isHashed({ text: updateObject.password })) {
+        updateObject.password = await HashingSecurityUtil.hashText({
+            plainText: updateObject.password,
+        });
+    }
+    if (updateObject?.phoneNumber &&
+        !EncryptionSecurityUtil.isEncrypted({ text: updateObject.phoneNumber })) {
+        updateObject.phoneNumber = EncryptionSecurityUtil.encryptText({
+            plainText: updateObject.phoneNumber,
+        });
+    }
+    this.setUpdate(updateObject);
+});
 userSchema.pre(["find", "findOne", "findOneAndUpdate", "countDocuments"], function (next) {
     softDeleteFunction(this);
+    next();
+});
+userSchema.post(["find", "findOne", "findOneAndUpdate", "countDocuments"], function (docs, next) {
+    if (!docs)
+        return next();
+    const decryptPhone = (doc) => {
+        if (doc.phoneNumber &&
+            EncryptionSecurityUtil.isEncrypted({ text: doc.phoneNumber })) {
+            doc.phoneNumber = EncryptionSecurityUtil.decryptText({
+                cipherText: doc.phoneNumber,
+            });
+        }
+    };
+    if (Array.isArray(docs)) {
+        docs.forEach(decryptPhone);
+    }
+    else {
+        decryptPhone(docs);
+    }
     next();
 });
 const UserModel = mongoose.models?.User ||

@@ -7,8 +7,14 @@ import type {
 import type {
   IAtByObject,
   ICodExpireCoundObject,
+  IIdSelectedAtObject,
   IProfilePictureObject,
 } from "./common.interface.ts";
+
+export interface IQuizAttempts {
+  count: number;
+  lastAttempt: Date;
+}
 
 export interface IUser {
   id?: Types.ObjectId | undefined; // virtual
@@ -40,10 +46,10 @@ export interface IUser {
   coverImages?: string[];
 
   // Acadamic Info
-  education?: string;
-  skills?: string[];
-  coursesAndCertifications?: string[];
-  careerPathId?: Types.ObjectId;
+  careerPath?: IIdSelectedAtObject;
+
+  // Quiz Info
+  quizAttempts: IQuizAttempts;
 
   freezed?: IAtByObject;
   restored?: IAtByObject;

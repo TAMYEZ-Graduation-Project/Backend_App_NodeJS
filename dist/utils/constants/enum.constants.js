@@ -69,6 +69,26 @@ export var FileDownloadValuesEnum;
 })(FileDownloadValuesEnum || (FileDownloadValuesEnum = {}));
 export var QuizTypesEnum;
 (function (QuizTypesEnum) {
-    QuizTypesEnum["careerAssesment"] = "CareerAssesment";
+    QuizTypesEnum["careerAssessment"] = "CareerAssessment";
     QuizTypesEnum["stepQuiz"] = "StepQuiz";
 })(QuizTypesEnum || (QuizTypesEnum = {}));
+export var LogoutFlagsEnum;
+(function (LogoutFlagsEnum) {
+    LogoutFlagsEnum["all"] = "All";
+    LogoutFlagsEnum["one"] = "One";
+    LogoutFlagsEnum["stay"] = "Stay";
+})(LogoutFlagsEnum || (LogoutFlagsEnum = {}));
+export var QuestionTypesEnum;
+(function (QuestionTypesEnum) {
+    QuestionTypesEnum["mcqSingle"] = "mcq-single";
+    QuestionTypesEnum["mcqMulti"] = "mcq-multi";
+    QuestionTypesEnum["written"] = "written";
+})(QuestionTypesEnum || (QuestionTypesEnum = {}));
+export var OptionIdsEnum;
+(function (OptionIdsEnum) {
+    OptionIdsEnum["empty"] = "optEmpty";
+    OptionIdsEnum["optionA"] = "optA";
+    OptionIdsEnum["optionB"] = "optB";
+    OptionIdsEnum["optionC"] = "optC";
+    OptionIdsEnum["optionD"] = "optD";
+})(OptionIdsEnum || (OptionIdsEnum = {}));

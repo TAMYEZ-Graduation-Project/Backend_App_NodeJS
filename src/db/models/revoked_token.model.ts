@@ -5,7 +5,7 @@ import ModelsNames from "../../utils/constants/models.names.ts";
 const revokedTokenSchema = new mongoose.Schema<IRevokedToken>(
   {
     jti: { type: String, required: true },
-    expiresIn: { type: Number, required: true },
+    expiresAt: { type: Date, required: true, expires: 0 },
     userId: {
       type: mongoose.Schema.Types.ObjectId,
       required: true,

@@ -6,7 +6,7 @@ class AuthValidators {
     static logIn = {
         body: z.strictObject({
             email: generalValidationConstants.email,
-            password: generalValidationConstants.password,
+            password: generalValidationConstants.password(),
         }),
     };
     static signUp = {
@@ -55,7 +55,7 @@ class AuthValidators {
     static resetForgetPassword = {
         body: this.forgetPassword.body
             .extend({
-            password: generalValidationConstants.password,
+            password: generalValidationConstants.password(),
             confirmPassword: z.string({
                 error: StringConstants.PATH_REQUIRED_MESSAGE("confirmPassword"),
             }),

@@ -1,5 +1,6 @@
-import type { Types } from "mongoose";
-import type { ProvidersEnum } from "../../utils/constants/enum.constants.ts";
+import type { HydratedDocument, Require_id, Types } from "mongoose";
+import type { OptionIdsEnum, ProvidersEnum } from "../../utils/constants/enum.constants.ts";
+import type { Default__v } from "mongoose";
 
 export interface IAtByObject {
   at: Date;
@@ -17,3 +18,16 @@ export interface IProfilePictureObject {
   provider: ProvidersEnum;
 }
 
+export interface IIdSelectedAtObject {
+  id: Types.ObjectId;
+  selectedAt: Date;
+}
+
+export interface IQuizQuestionOption {
+  id: OptionIdsEnum;
+  text: string;
+}
+export type FullIQuizQuestionOption = Require_id<
+  Default__v<IQuizQuestionOption>
+>;
+export type HIQuizQuestionOption = HydratedDocument<IQuizQuestionOption>;

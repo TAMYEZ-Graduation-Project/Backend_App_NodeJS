@@ -1,6 +1,7 @@
-import jwt, { type SignOptions } from "jsonwebtoken";
+import jwt, { type JwtPayload, type SignOptions } from "jsonwebtoken";
 import type { ITokenPayload } from "../constants/interface.constants.ts";
 import {
+  LogoutFlagsEnum,
   RolesEnum,
   SignatureLevelsEnum,
   TokenTypesEnum,
@@ -10,6 +11,7 @@ import type { HIUserType } from "../../db/interfaces/user.interface.ts";
 import IdSecurityUtil from "./id.security.ts";
 import {
   BadRequestException,
+  ServerException,
   UnauthorizedException,
 } from "../exceptions/custom.exceptions.ts";
 import {
@@ -18,6 +20,7 @@ import {
 } from "../../db/repositories/index.ts";
 import { RevokedTokenModel, UserModel } from "../../db/models/index.ts";
 import StringConstants from "../constants/strings.constants.ts";
+import type { Types } from "mongoose";
 
 class TokenSecurityUtil {
   private static _userRepository = new UserRepository(UserModel);
@@ -172,6 +175,60 @@ class TokenSecurityUtil {
       user,
       payload,
     };
+  };
+
+  static revoke = async ({
+    flag = LogoutFlagsEnum.one,
+    userId,
+    tokenPayload,
+  }: {
+    flag?: LogoutFlagsEnum;
+    userId: Types.ObjectId;
+    tokenPayload: JwtPayload;
+  }): Promise<number> => {
+    let statusCode = 200;
+    switch (flag) {
+      case LogoutFlagsEnum.all:
+        await this._userRepository
+          .updateOne({
+            filter: { _id: userId },
+            update: {
+              changeCredentialsTime: Date.now(),
+            },
+          })
+          .catch((err) => {
+            throw new ServerException(
+              StringConstants.FAILED_REVOKE_TOKEN_MESSAGE
+            );
+          });
+        break;
+      case LogoutFlagsEnum.one:
+        await this._revokedTokenRepository
+          .create({
+            data: [
+              {
+                jti: tokenPayload.jti!,
+                expiresAt: new Date(
+                  (tokenPayload.iat! +
+                    Number(process.env[EnvFields.ACCESS_TOKEN_EXPIRES_IN])) *
+                    1000
+                ),
+                userId,
+              },
+            ],
+          })
+          .catch((err) => {
+            throw new ServerException(
+              StringConstants.FAILED_REVOKE_TOKEN_MESSAGE
+            );
+          });
+        statusCode = 201;
+        break;
+
+      default:
+        break;
+    }
+    return statusCode;
   };
 }
 

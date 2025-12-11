@@ -6,7 +6,7 @@ class RoutePaths {
   // uploads routes
   static readonly uploads = "/uploads";
   static readonly getFileFromSubKey = "/*path";
-  static readonly getFileFromSubKeyByPresignedUrl = "/uploads";
+  static readonly getFileFromSubKeyByPresignedUrl = "/presignd-url/*path";
 
   // auth routes
   static readonly auth = "/auth";
@@ -24,10 +24,19 @@ class RoutePaths {
   static readonly user = "/user";
   static readonly userProfile = "/";
   static readonly profilePicture = "/profile-picture";
+  static readonly updateProfile = "/";
+  static readonly changePassword = "/change-password";
+  static readonly logout = "/logout";
 
   // quiz routes
   static readonly quiz = "/quiz";
-  static readonly createQuiz = "/";
+  static readonly getQuizDetails = "/:quizId";
+  static readonly getQuizQuestions = "/questions/:quizId";
+  static readonly getSavedQuizzes = "/saved";
+  static readonly getSavedQuiz = "/saved/:savedQuizId";
+  static readonly checkQuizAnswers = "/:quizId";
+  static readonly createQuiz = "/admin/";
+  static readonly updateQuiz = "/admin/:quizId";
 }
 
 export default RoutePaths;

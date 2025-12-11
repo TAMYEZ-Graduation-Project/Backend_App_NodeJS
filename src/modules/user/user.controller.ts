@@ -19,6 +19,13 @@ userRouter.get(
   userService.getProfile
 );
 
+userRouter.post(
+  RoutePaths.logout,
+  validationMiddleware({ schema: UserValidators.logout }),
+  Auths.authenticationMiddleware(),
+  userService.logout
+);
+
 userRouter.patch(
   RoutePaths.profilePicture,
   Auths.authenticationMiddleware(),
@@ -29,6 +36,20 @@ userRouter.patch(
   }),
   validationMiddleware({ schema: UserValidators.uploadProfilePicture }),
   userService.uploadProfilePicture
+);
+
+userRouter.patch(
+  RoutePaths.updateProfile,
+  Auths.authenticationMiddleware(),
+  validationMiddleware({ schema: UserValidators.updateProfile }),
+  userService.updateProfile
+);
+
+userRouter.patch(
+  RoutePaths.changePassword,
+  Auths.authenticationMiddleware(),
+  validationMiddleware({ schema: UserValidators.changePassword }),
+  userService.changePassword
 );
 
 export default userRouter;

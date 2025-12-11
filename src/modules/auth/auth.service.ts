@@ -77,7 +77,6 @@ class AuthService {
       gender,
       phoneNumber,
     }: SignUpBodyDtoType = req.body as SignUpBodyDtoType;
-
     const emailExists = await this._userRespository.findByEmail({ email });
 
     if (emailExists) {
@@ -91,7 +90,7 @@ class AuthService {
         {
           fullName,
           email,
-          password: await HashingSecurityUtil.hashText({ plainText: password }),
+          password,
           gender,
           phoneNumber,
           confirmEmailLink: {
@@ -120,18 +119,10 @@ class AuthService {
     try {
       const { token } = req.query as VerifyEmailQueryDtoType;
 
-      console.log({ token });
-
-      console.log({
-        encKey: process.env[EnvFields.EMAIL_VERIFICATION_TOKEN_ENC_KEY],
-      });
-
       const tokenAfterDecryption = EncryptionSecurityUtil.decryptText({
         cipherText: decodeURIComponent(token),
         secretKey: process.env[EnvFields.EMAIL_VERIFICATION_TOKEN_ENC_KEY]!,
       });
-
-      console.log({ tokenAfterDecryption });
 
       const [email, otp] = tokenAfterDecryption.split(" ");
 

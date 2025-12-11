@@ -22,6 +22,10 @@ class EncryptionSecurityUtil {
       CryptoJS.enc.Utf8
     );
   };
+
+  static isEncrypted = ({ text }: { text: string }) => {
+    return typeof text === "string" && text.startsWith("U2FsdGVkX1");
+  };
 }
 
 export default EncryptionSecurityUtil;

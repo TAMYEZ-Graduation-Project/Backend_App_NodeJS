@@ -1,4 +1,6 @@
 class AppRegex {
+  static readonly nameRegex = /^[A-Z][a-z]{1,24}$/;
+
   static readonly fullNameRegex = /^[A-Z][a-z]{1,24}\s[A-Z][a-z]{1,24}$/;
 
   static readonly passwordRegex =
@@ -15,6 +17,8 @@ class AppRegex {
 
   static readonly getFileWithUrlRegex =
     /^(users)\/[0-9a-f]{24}\/.+\.(jpeg|jpg|png|gif)/;
+
+  static readonly quizTitleRegex = /^(?=.{3,200}$)[A-Z][a-z]+(\s[A-Z][a-z]+)*$/;
 }
 
 export default AppRegex;

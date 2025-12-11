@@ -1,8 +1,8 @@
 import jwt, {} from "jsonwebtoken";
-import { RolesEnum, SignatureLevelsEnum, TokenTypesEnum, } from "../constants/enum.constants.js";
+import { LogoutFlagsEnum, RolesEnum, SignatureLevelsEnum, TokenTypesEnum, } from "../constants/enum.constants.js";
 import EnvFields from "../constants/env_fields.constants.js";
 import IdSecurityUtil from "./id.security.js";
-import { BadRequestException, UnauthorizedException, } from "../exceptions/custom.exceptions.js";
+import { BadRequestException, ServerException, UnauthorizedException, } from "../exceptions/custom.exceptions.js";
 import { RevokedTokenRepository, UserRepository, } from "../../db/repositories/index.js";
 import { RevokedTokenModel, UserModel } from "../../db/models/index.js";
 import StringConstants from "../constants/strings.constants.js";
@@ -93,6 +93,44 @@ class TokenSecurityUtil {
             user,
             payload,
         };
+    };
+    static revoke = async ({ flag = LogoutFlagsEnum.one, userId, tokenPayload, }) => {
+        let statusCode = 200;
+        switch (flag) {
+            case LogoutFlagsEnum.all:
+                await this._userRepository
+                    .updateOne({
+                    filter: { _id: userId },
+                    update: {
+                        changeCredentialsTime: Date.now(),
+                    },
+                })
+                    .catch((err) => {
+                    throw new ServerException(StringConstants.FAILED_REVOKE_TOKEN_MESSAGE);
+                });
+                break;
+            case LogoutFlagsEnum.one:
+                await this._revokedTokenRepository
+                    .create({
+                    data: [
+                        {
+                            jti: tokenPayload.jti,
+                            expiresAt: new Date((tokenPayload.iat +
+                                Number(process.env[EnvFields.ACCESS_TOKEN_EXPIRES_IN])) *
+                                1000),
+                            userId,
+                        },
+                    ],
+                })
+                    .catch((err) => {
+                    throw new ServerException(StringConstants.FAILED_REVOKE_TOKEN_MESSAGE);
+                });
+                statusCode = 201;
+                break;
+            default:
+                break;
+        }
+        return statusCode;
     };
 }
 export default TokenSecurityUtil;

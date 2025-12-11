@@ -11,9 +11,12 @@ import EnvFields from "../../utils/constants/env_fields.constants.js";
 const userRouter = Router();
 const userService = new UserService();
 userRouter.get(RoutePaths.userProfile, Auths.authenticationMiddleware(), userService.getProfile);
+userRouter.post(RoutePaths.logout, validationMiddleware({ schema: UserValidators.logout }), Auths.authenticationMiddleware(), userService.logout);
 userRouter.patch(RoutePaths.profilePicture, Auths.authenticationMiddleware(), CloudMulter.handleSingleFileUpload({
     fieldName: StringConstants.ATTACHMENT_FIELD_NAME,
     maxFileSize: Number(process.env[EnvFields.PROFILE_PICTURE_SIZE]),
     validation: fileValidation.image,
 }), validationMiddleware({ schema: UserValidators.uploadProfilePicture }), userService.uploadProfilePicture);
+userRouter.patch(RoutePaths.updateProfile, Auths.authenticationMiddleware(), validationMiddleware({ schema: UserValidators.updateProfile }), userService.updateProfile);
+userRouter.patch(RoutePaths.changePassword, Auths.authenticationMiddleware(), validationMiddleware({ schema: UserValidators.changePassword }), userService.changePassword);
 export default userRouter;

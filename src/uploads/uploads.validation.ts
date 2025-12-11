@@ -11,7 +11,7 @@ class UploadsValidators {
           z.string({ error: StringConstants.PATH_REQUIRED_MESSAGE("path") })
         )
         .refine(
-          (data) => {
+          (data) => {            
             return AppRegex.getFileWithUrlRegex.test(data.join("/"));
           },
           { error: StringConstants.INVALID_FILE_PATH_MESSAGE }

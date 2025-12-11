@@ -68,6 +68,26 @@ export enum FileDownloadValuesEnum {
 }
 
 export enum QuizTypesEnum {
-  careerAssesment = "CareerAssesment",
+  careerAssessment = "CareerAssessment",
   stepQuiz = "StepQuiz",
+}
+
+export enum LogoutFlagsEnum {
+  all = "All",
+  one = "One",
+  stay = "Stay",
+}
+
+export enum QuestionTypesEnum {
+  mcqSingle = "mcq-single",
+  mcqMulti = "mcq-multi",
+  written = "written",
+}
+
+export enum OptionIdsEnum {
+  empty = "optEmpty",
+  optionA = "optA",
+  optionB = "optB",
+  optionC = "optC",
+  optionD = "optD",
 }

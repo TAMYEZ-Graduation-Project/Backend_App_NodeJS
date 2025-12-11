@@ -1,5 +1,9 @@
 import type { Request } from "express";
-import { GenderEnum, QuizTypesEnum, SignatureLevelsEnum } from "./enum.constants.ts";
+import {
+  GenderEnum,
+  QuizTypesEnum,
+  SignatureLevelsEnum,
+} from "./enum.constants.ts";
 import type { RequestKeysType } from "../types/valdiation_schema.type.ts";
 
 class StringConstants {
@@ -37,6 +41,9 @@ class StringConstants {
     "Invalid login credentials 🪪";
 
   static readonly NAME_VALIDATION_MESSAGE =
+    "Name must start with a capital letter and 2-25 characters long 📛";
+
+  static readonly FULL_NAME_VALIDATION_MESSAGE =
     "Full name must be at least 2 words, each starting with a capital letter and 2-25 characters long 📛";
 
   static readonly PASSWORD_VALIDATION_MESSAGE =
@@ -72,8 +79,6 @@ class StringConstants {
     "Invalid OTP! OTP must consists only of 6 digits 🔒";
 
   static readonly INVALID_OTP_MESSAGE = "Invalid OTP or has expired 🔑 ⏰";
-
-  static readonly INVALID_USER_ID_MESSAGE = "Invalid userId 🆔";
 
   static readonly INVALID_TOKEN_MESSAGE = "Invalid Token ⛔";
 
@@ -127,8 +132,11 @@ class StringConstants {
   static readonly INVALID_VALIDATION_DURATION_MESSAGE =
     "duration must be an integer number between 60s and 36_000s 🕛";
 
-  static readonly INVALID_DURATION_EXIST_MESSAGE =
-    `${QuizTypesEnum.careerAssesment} must not have a duration value 🕛`;
+  static readonly INVALID_DURATION_EXIST_MESSAGE = `${QuizTypesEnum.careerAssessment} must not have a duration value 🕛`;
+
+  static readonly FAILED_REVOKE_TOKEN_MESSAGE = "Failed to revoke Token(s) ☠️";
+
+  static readonly CAREER_ASSESSMENT = "Career Assessment";
 
   static WRONG_ROUTE_MESSAGE(req: Request): string {
     return `Wrong URI ${req.url} or METHOD ${req.method} ⛔`;
@@ -161,6 +169,10 @@ class StringConstants {
     return `Invalid file mimeType 📁❌! Allowd types are ${allowedMimeTypes}`;
   }
 
+  static INVALID_PARAMETER_MESSAGE(idName: string = "id"): string {
+    return `Invalid ${idName} ❌`;
+  }
+
   static INVALID_ENUM_VALUE_MESSAGE({
     enumValueName,
     theEnum,
@@ -171,6 +183,10 @@ class StringConstants {
     return `Invalid ${enumValueName}, allowed values are ${Object.values(
       theEnum
     )}`;
+  }
+
+  static CREATED_SUCCESSFULLY_MESSAGE(item: string): string {
+    return `${item} Created Successfully ✅`;
   }
 
   // assets paths

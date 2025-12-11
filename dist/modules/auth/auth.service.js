@@ -42,7 +42,7 @@ class AuthService {
                 {
                     fullName,
                     email,
-                    password: await HashingSecurityUtil.hashText({ plainText: password }),
+                    password,
                     gender,
                     phoneNumber,
                     confirmEmailLink: {
@@ -65,15 +65,10 @@ class AuthService {
     verifyEmail = async (req, res) => {
         try {
             const { token } = req.query;
-            console.log({ token });
-            console.log({
-                encKey: process.env[EnvFields.EMAIL_VERIFICATION_TOKEN_ENC_KEY],
-            });
             const tokenAfterDecryption = EncryptionSecurityUtil.decryptText({
                 cipherText: decodeURIComponent(token),
                 secretKey: process.env[EnvFields.EMAIL_VERIFICATION_TOKEN_ENC_KEY],
             });
-            console.log({ tokenAfterDecryption });
             const [email, otp] = tokenAfterDecryption.split(" ");
             const user = await this._userRespository.findOne({
                 filter: {

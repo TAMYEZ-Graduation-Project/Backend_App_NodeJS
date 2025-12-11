@@ -2,7 +2,7 @@ import type { Default__v, HydratedDocument, Require_id, Types } from "mongoose";
 
 export interface IRevokedToken {
   jti: string;
-  expiresIn: number;
+  expiresAt: Date;
   userId: Types.ObjectId;
 
   createdAt?: Date;

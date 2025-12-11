@@ -4,7 +4,7 @@ class RoutePaths {
     static SLASH_PATH = "/";
     static uploads = "/uploads";
     static getFileFromSubKey = "/*path";
-    static getFileFromSubKeyByPresignedUrl = "/uploads";
+    static getFileFromSubKeyByPresignedUrl = "/presignd-url/*path";
     static auth = "/auth";
     static signUp = "/sign-up";
     static logIn = "/log-in";
@@ -18,7 +18,16 @@ class RoutePaths {
     static user = "/user";
     static userProfile = "/";
     static profilePicture = "/profile-picture";
+    static updateProfile = "/";
+    static changePassword = "/change-password";
+    static logout = "/logout";
     static quiz = "/quiz";
-    static createQuiz = "/";
+    static getQuizDetails = "/:quizId";
+    static getQuizQuestions = "/questions/:quizId";
+    static getSavedQuizzes = "/saved";
+    static getSavedQuiz = "/saved/:savedQuizId";
+    static checkQuizAnswers = "/:quizId";
+    static createQuiz = "/admin/";
+    static updateQuiz = "/admin/:quizId";
 }
 export default RoutePaths;
