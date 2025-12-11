@@ -37,6 +37,10 @@ class RoutePaths {
   static readonly checkQuizAnswers = "/:quizId";
   static readonly createQuiz = "/admin/";
   static readonly updateQuiz = "/admin/:quizId";
+
+  // firebase route
+  static readonly firebase = "/firebase";
+  static readonly sendNotification = "/send-notification";
 }
 
 export default RoutePaths;

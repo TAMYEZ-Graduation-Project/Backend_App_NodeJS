@@ -19,6 +19,8 @@ class AppRegex {
     /^(users)\/[0-9a-f]{24}\/.+\.(jpeg|jpg|png|gif)/;
 
   static readonly quizTitleRegex = /^(?=.{3,200}$)[A-Z][a-z]+(\s[A-Z][a-z]+)*$/;
+
+  static readonly fcmTokenRegex = /^[A-Za-z0-9_:\-]{20,4096}$/;
 }
 
 export default AppRegex;

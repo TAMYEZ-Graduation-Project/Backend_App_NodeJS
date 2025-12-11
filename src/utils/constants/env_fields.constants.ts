@@ -66,6 +66,9 @@ abstract class EnvFields {
   static readonly QUIZ_QUESTIONS_EXPIRES_IN_SECONDS =
     "QUIZ_QUESTIONS_EXPIRES_IN_SECONDS";
   static readonly QUIZ_COOLDOWN_IN_SECONDS = "QUIZ_COOLDOWN_IN_SECONDS";
+
+  // Firebase Admin
+  static readonly FIREBASE_ADMIN_KEY = "FIREBASE_ADMIN_KEY";
 }
 
 export default EnvFields;

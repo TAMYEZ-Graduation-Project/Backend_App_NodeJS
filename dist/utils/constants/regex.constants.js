@@ -8,5 +8,6 @@ class AppRegex {
     static phoneNumberRegex = /^(\+20)(10|11|12|15)\d{8}$/;
     static getFileWithUrlRegex = /^(users)\/[0-9a-f]{24}\/.+\.(jpeg|jpg|png|gif)/;
     static quizTitleRegex = /^(?=.{3,200}$)[A-Z][a-z]+(\s[A-Z][a-z]+)*$/;
+    static fcmTokenRegex = /^[A-Za-z0-9_:\-]{20,4096}$/;
 }
 export default AppRegex;
