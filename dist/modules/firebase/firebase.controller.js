@@ -10,4 +10,7 @@ const firebaseService = new FirebaseService();
 firebaseRouter.post(RoutePaths.sendNotification, Auths.combined({
     accessRoles: firebaseAuthorizationEndpoints.sendNotification,
 }), validationMiddleware({ schema: FirebaseValidators.sendNotification }), firebaseService.sendFirebaseNotification);
+firebaseRouter.post(RoutePaths.sendMultipleNotifications, Auths.combined({
+    accessRoles: firebaseAuthorizationEndpoints.sendNotification,
+}), validationMiddleware({ schema: FirebaseValidators.sendMultiNotifications }), firebaseService.sendMultipleFirebaseNotifications);
 export default firebaseRouter;

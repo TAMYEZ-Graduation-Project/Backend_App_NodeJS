@@ -31,5 +31,6 @@ class RoutePaths {
     static updateQuiz = "/admin/:quizId";
     static firebase = "/firebase";
     static sendNotification = "/send-notification";
+    static sendMultipleNotifications = "/send-multiple-notifications";
 }
 export default RoutePaths;

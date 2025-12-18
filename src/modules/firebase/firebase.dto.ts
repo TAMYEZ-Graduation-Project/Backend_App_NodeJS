@@ -4,3 +4,7 @@ import FirebaseValidators from "./firebase.validation.ts";
 export type SendNotificationBodyDtoType = z.infer<
   typeof FirebaseValidators.sendNotification.body
 >;
+
+export type SendMultipleNotificationsBodyDtoType = z.infer<
+  typeof FirebaseValidators.sendMultiNotifications.body
+>;

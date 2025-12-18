@@ -1,6 +1,9 @@
-import type { TokenMessage } from "firebase-admin/messaging";
+import type {
+  BatchResponse,
+  MulticastMessage,
+  TokenMessage,
+} from "firebase-admin/messaging";
 import { firebaseAdmin } from "../../index.ts";
-
 
 class NotificationService {
   sendNotification = async ({
@@ -36,28 +39,27 @@ class NotificationService {
     title: string;
     body: string;
     imageUrl?: string | undefined;
-  }) => {
-    const message: TokenMessage[] = deviceTokens.map((token) => {
-      if (imageUrl)
-        return {
-          notification: {
-            title,
-            body,
-            imageUrl,
-          },
-          token,
-        };
-      else
-        return {
-          notification: {
-            title,
-            body,
-          },
-          token,
-        };
-    });
+  }): Promise<Partial<BatchResponse>> => {
+    const message: MulticastMessage = {
+      notification: {
+        title,
+        body,
+      },
+      tokens: deviceTokens,
+    };
 
-    return firebaseAdmin.messaging().sendEach(message);
+    if (imageUrl) message.notification!.imageUrl = imageUrl;
+    const result = await firebaseAdmin
+      .messaging()
+      .sendEachForMulticast(message);
+    console.log({
+      result,
+      responses: result.responses,
+    });
+    return {
+      successCount: result.successCount,
+      failureCount: result.failureCount,
+    };
   };
 }
 export default NotificationService;

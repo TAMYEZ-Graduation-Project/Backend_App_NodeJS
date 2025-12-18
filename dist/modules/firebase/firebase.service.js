@@ -15,5 +15,19 @@ class FirebaseService {
             message: "Notification Sent Successfully 🔔",
         });
     };
+    sendMultipleFirebaseNotifications = async (req, res) => {
+        const { title, body, imageUrl, fcmTokens } = req.body;
+        const response = await this._notificationService.sendMultipleNotifications({
+            title,
+            body,
+            imageUrl,
+            deviceTokens: fcmTokens,
+        });
+        return successHandler({
+            res,
+            message: "Notification Sent Successfully 🔔",
+            body: { response },
+        });
+    };
 }
 export default FirebaseService;

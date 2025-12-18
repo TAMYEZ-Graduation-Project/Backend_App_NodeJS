@@ -92,3 +92,9 @@ export var OptionIdsEnum;
     OptionIdsEnum["optionC"] = "optC";
     OptionIdsEnum["optionD"] = "optD";
 })(OptionIdsEnum || (OptionIdsEnum = {}));
+export var PlatfromsEnum;
+(function (PlatfromsEnum) {
+    PlatfromsEnum["flutterAndroid"] = "flutter-android";
+    PlatfromsEnum["flutterIos"] = "flutter-ios";
+    PlatfromsEnum["web"] = "web";
+})(PlatfromsEnum || (PlatfromsEnum = {}));

@@ -13,26 +13,26 @@ class NotificationService {
         return firebaseAdmin.messaging().send(message);
     };
     sendMultipleNotifications = async ({ deviceTokens, title, body, imageUrl, }) => {
-        const message = deviceTokens.map((token) => {
-            if (imageUrl)
-                return {
-                    notification: {
-                        title,
-                        body,
-                        imageUrl,
-                    },
-                    token,
-                };
-            else
-                return {
-                    notification: {
-                        title,
-                        body,
-                    },
-                    token,
-                };
+        const message = {
+            notification: {
+                title,
+                body,
+            },
+            tokens: deviceTokens,
+        };
+        if (imageUrl)
+            message.notification.imageUrl = imageUrl;
+        const result = await firebaseAdmin
+            .messaging()
+            .sendEachForMulticast(message);
+        console.log({
+            result,
+            responses: result.responses,
         });
-        return firebaseAdmin.messaging().sendEach(message);
+        return {
+            successCount: result.successCount,
+            failureCount: result.failureCount,
+        };
     };
 }
 export default NotificationService;

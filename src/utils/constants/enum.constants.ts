@@ -91,3 +91,9 @@ export enum OptionIdsEnum {
   optionC = "optC",
   optionD = "optD",
 }
+
+export enum PlatfromsEnum {
+  flutterAndroid = "flutter-android",
+  flutterIos = "flutter-ios",
+  web = "web",
+}

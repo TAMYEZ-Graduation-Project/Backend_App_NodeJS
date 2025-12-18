@@ -19,4 +19,13 @@ firebaseRouter.post(
   firebaseService.sendFirebaseNotification
 );
 
+firebaseRouter.post(
+  RoutePaths.sendMultipleNotifications,
+  Auths.combined({
+    accessRoles: firebaseAuthorizationEndpoints.sendNotification,
+  }),
+  validationMiddleware({ schema: FirebaseValidators.sendMultiNotifications }),
+  firebaseService.sendMultipleFirebaseNotifications
+);
+
 export default firebaseRouter;

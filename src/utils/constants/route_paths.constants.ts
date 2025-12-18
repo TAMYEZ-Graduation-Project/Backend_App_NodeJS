@@ -41,6 +41,7 @@ class RoutePaths {
   // firebase route
   static readonly firebase = "/firebase";
   static readonly sendNotification = "/send-notification";
+  static readonly sendMultipleNotifications = "/send-multiple-notifications";
 }
 
 export default RoutePaths;
