@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-import ModelsNames from "../../utils/constants/models.names.js";
+import ModelsNames from "../../utils/constants/models.names.constants.js";
 import { QuestionTypesEnum } from "../../utils/constants/enum.constants.js";
 import { questionOptionSchema } from "./common_schemas.model.js";
 import { validateIfValidQuestionAnswer } from "../../utils/question/validate_options.question.js";

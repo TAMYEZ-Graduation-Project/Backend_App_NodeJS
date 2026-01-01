@@ -1,7 +1,11 @@
 import NotificationService from "../../utils/firebase/services/notifications/notification.service.js";
 import successHandler from "../../utils/handlers/success.handler.js";
+import { NotificationPushDeviceRepository } from "../../db/repositories/index.js";
+import NotificationPushDeviceModel from "../../db/models/notifiction_push_device.model.js";
+import { BadRequestException, ConflictException, NotFoundException, ServerException, } from "../../utils/exceptions/custom.exceptions.js";
 class FirebaseService {
     _notificationService = new NotificationService();
+    _notificationPushDeviceRepository = new NotificationPushDeviceRepository(NotificationPushDeviceModel);
     sendFirebaseNotification = async (req, res) => {
         const { title, body, imageUrl, fcmToken } = req.body;
         await this._notificationService.sendNotification({
@@ -25,8 +29,97 @@ class FirebaseService {
         });
         return successHandler({
             res,
-            message: "Notification Sent Successfully 🔔",
+            message: "Notifications Sent Successfully 🔔",
             body: { response },
+        });
+    };
+    enableNotifications = async (req, res) => {
+        const { replaceDeviceId, ...restObj } = req.body;
+        const pushDevices = await this._notificationPushDeviceRepository.find({
+            filter: { userId: req.user._id },
+            options: { projection: { fcmToken: 0 } },
+        });
+        if (pushDevices?.length &&
+            pushDevices.find((p) => p.deviceId === restObj.deviceId)) {
+            throw new ConflictException("This deviceId has already an enabled notification push device ❌");
+        }
+        let statusCode;
+        if (pushDevices?.length && pushDevices.length >= 2) {
+            if (!replaceDeviceId) {
+                throw new BadRequestException("You have two enabled push Devices, please choose one to replace:", undefined, pushDevices);
+            }
+            else if (pushDevices.findIndex((p) => p.deviceId === replaceDeviceId) == -1) {
+                throw new NotFoundException("Invalid replaceDeviceId not found for this user ❌");
+            }
+            else {
+                const result = await this._notificationPushDeviceRepository.replaceOne({
+                    filter: { userId: req.user._id, deviceId: replaceDeviceId },
+                    replacement: {
+                        ...restObj,
+                        userId: req.user._id,
+                        jwtTokenExpiresAt: new Date(req.tokenPayload.exp),
+                        isActive: true,
+                    },
+                });
+                if (!result.matchedCount) {
+                    if (!result) {
+                        throw new ServerException("Failed to enable notifications, please try again later ☹️");
+                    }
+                }
+                statusCode = 200;
+            }
+        }
+        else {
+            const result = await this._notificationPushDeviceRepository.create({
+                data: [
+                    {
+                        ...restObj,
+                        userId: req.user._id,
+                        jwtTokenExpiresAt: new Date(req.tokenPayload.exp * 1000),
+                    },
+                ],
+            });
+            if (!result) {
+                throw new ServerException("Failed to enable notifications, please try again later ☹️");
+            }
+            statusCode = 201;
+        }
+        return successHandler({
+            res,
+            statusCode,
+            message: "Notifications enabled for this device successfully ✅ 🔔",
+        });
+    };
+    refreshFcmToken = async (req, res) => {
+        const { fcmToken, deviceId } = req.body;
+        const result = await this._notificationPushDeviceRepository.updateOne({
+            filter: {
+                userId: req.user._id,
+                deviceId,
+            },
+            update: {
+                fcmToken,
+            },
+        });
+        if (!result.matchedCount) {
+            throw new NotFoundException("Invalid deviceId, or notification is already disabled ❌");
+        }
+        return successHandler({
+            res,
+            message: "Fcm Token has been refreshed sucessfully ✅",
+        });
+    };
+    disableNotifications = async (req, res) => {
+        const { deviceId } = req.body;
+        const pushDevice = await this._notificationPushDeviceRepository.findOneAndDelete({
+            filter: { userId: req.user._id, deviceId },
+        });
+        if (!pushDevice) {
+            throw new BadRequestException("Invalid deviceId, or notification is already disabled ❌");
+        }
+        return successHandler({
+            res,
+            message: "Notifications for this device has been disabled successfully ✅",
         });
     };
 }

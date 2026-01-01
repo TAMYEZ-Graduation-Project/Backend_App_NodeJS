@@ -13,6 +13,7 @@ import UserModel from "./db/models/user.model.js";
 import protocolAndHostHanlder from "./utils/handlers/protocol_host.handler.js";
 import uploadsRouter from "./uploads/uploads.routes.js";
 import QuizModel from "./db/models/quiz.model.js";
+import NotificationPushDeviceModel from "./db/models/notifiction_push_device.model.js";
 async function bootstrap() {
     const app = express();
     app.use(cors());
@@ -32,6 +33,7 @@ async function bootstrap() {
     else {
         await UserModel.syncIndexes();
         await QuizModel.syncIndexes();
+        await NotificationPushDeviceModel.syncIndexes();
         app.use(protocolAndHostHanlder);
         app.use(express.json());
         app.use(RoutePaths.uploads, uploadsRouter);

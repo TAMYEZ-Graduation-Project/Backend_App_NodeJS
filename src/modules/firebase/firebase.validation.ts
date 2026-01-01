@@ -1,8 +1,7 @@
 import { z } from "zod";
 import AppRegex from "../../utils/constants/regex.constants.ts";
 import StringConstants from "../../utils/constants/strings.constants.ts";
-import { platform } from "os";
-import { PlatfromsEnum } from "../../utils/constants/enum.constants.ts";
+import { PlatformsEnum } from "../../utils/constants/enum.constants.ts";
 
 class FirebaseValidators {
   static readonly sendNotification = {
@@ -41,13 +40,26 @@ class FirebaseValidators {
     }),
   };
 
-  static readonly enableNotifications = {
+  static readonly disableNotifications = {
     body: z.strictObject({
       deviceId: z
         .string({ error: StringConstants.PATH_REQUIRED_MESSAGE("deviceId") })
         .regex(AppRegex.deviceIdRegex, {
           error: "Invalid deviceId, it should be a valid UUID ❌",
         }),
+    }),
+  };
+
+  static readonly refreshFcmToken = {
+    body: this.disableNotifications.body.extend({
+      fcmToken: z
+        .string({ error: StringConstants.PATH_REQUIRED_MESSAGE("fcmToken") })
+        .regex(AppRegex.fcmTokenRegex, { error: "Invalid fcmToken format ❌" }),
+    }),
+  };
+
+  static readonly enableNotifications = {
+    body: this.refreshFcmToken.body.extend({
       replaceDeviceId: z
         .string({ error: StringConstants.PATH_REQUIRED_MESSAGE("deviceId") })
         .regex(AppRegex.deviceIdRegex, {
@@ -67,7 +79,7 @@ class FirebaseValidators {
             "appVersion must consists from 2 to 4 parts each separated by a dot e.g: 1.0, 1.0.0, 1.0.0.0 ❌",
         }),
 
-      platform: z.enum(Object.values(PlatfromsEnum)),
+      platform: z.enum(Object.values(PlatformsEnum)),
       os: z
         .string({ error: StringConstants.PATH_REQUIRED_MESSAGE("os") })
         .regex(AppRegex.osRegex, {

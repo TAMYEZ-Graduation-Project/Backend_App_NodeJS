@@ -28,4 +28,25 @@ firebaseRouter.post(
   firebaseService.sendMultipleFirebaseNotifications
 );
 
+firebaseRouter.post(
+  RoutePaths.enableNotifications,
+  Auths.authenticationMiddleware(),
+  validationMiddleware({ schema: FirebaseValidators.enableNotifications }),
+  firebaseService.enableNotifications
+);
+
+firebaseRouter.post(
+  RoutePaths.refreshFcmToken,
+  Auths.authenticationMiddleware(),
+  validationMiddleware({ schema: FirebaseValidators.refreshFcmToken }),
+  firebaseService.refreshFcmToken
+);
+
+firebaseRouter.post(
+  RoutePaths.disableNotifications,
+  Auths.authenticationMiddleware(),
+  validationMiddleware({ schema: FirebaseValidators.disableNotifications }),
+  firebaseService.disableNotifications
+);
+
 export default firebaseRouter;

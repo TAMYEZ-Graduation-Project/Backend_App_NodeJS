@@ -25,7 +25,7 @@ class AppRegex {
   static readonly deviceIdRegex =
     /^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-4[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}$/;
 
-  static readonly appVersionRegex = /^\\d+(?:\\.\\d+){1,3}$/;
+  static readonly appVersionRegex = /^\d+(?:\.\d+){1,3}$/;
 
   static readonly osRegex = /^(Android|IOS|Web)\s\d{1,2}(\.\d{1,2})*$/
 

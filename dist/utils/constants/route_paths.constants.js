@@ -32,5 +32,8 @@ class RoutePaths {
     static firebase = "/firebase";
     static sendNotification = "/send-notification";
     static sendMultipleNotifications = "/send-multiple-notifications";
+    static enableNotifications = "/enable-notifications";
+    static disableNotifications = "/disable-notifications";
+    static refreshFcmToken = "/refresh-fcm-token";
 }
 export default RoutePaths;

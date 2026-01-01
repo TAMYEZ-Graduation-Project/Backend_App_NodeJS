@@ -1,7 +1,8 @@
 import mongoose, { Model } from "mongoose";
 import type { INotificationPushDevice } from "../interfaces/notification_push_device.interface.ts";
 import ModelsNames from "../../utils/constants/models.names.constants.ts";
-import { PlatfromsEnum } from "../../utils/constants/enum.constants.ts";
+import { PlatformsEnum } from "../../utils/constants/enum.constants.ts";
+import DocumentFormat from "../../utils/formats/document.format.ts";
 
 const notifictionPushDeviceSchema =
   new mongoose.Schema<INotificationPushDevice>(
@@ -16,13 +17,11 @@ const notifictionPushDeviceSchema =
         require: true,
       },
 
-      notificationsEnabled: { type: Boolean, default: true },
       fcmToken: { type: String, required: true },
-      tokenLastUpdate: { type: Date },
       jwtTokenExpiresAt: { type: Date, required: true },
 
       appVersion: { type: String, required: true },
-      platfrom: { type: String, enum: Object.values(PlatfromsEnum) },
+      platform: { type: String, enum: Object.values(PlatformsEnum) },
       os: { type: String, required: true },
       deviceModel: { type: String, required: true },
 
@@ -40,7 +39,29 @@ notifictionPushDeviceSchema.virtual("id").get(function () {
   return this._id;
 });
 
-notifictionPushDeviceSchema.index({ userId: 1, deviceId: 1 });
+notifictionPushDeviceSchema.index({ userId: 1, deviceId: 1 }, { unique: true });
+
+notifictionPushDeviceSchema.methods.toJSON = function () {
+  const pushDevice = DocumentFormat.getIdFrom_Id<INotificationPushDevice>(
+    this.toObject()
+  );
+
+  return {
+    id: pushDevice.id,
+    userId: pushDevice.userId,
+    deviceId: pushDevice.deviceId,
+    fcmToken: pushDevice?.fcmToken,
+    jwtTokenExpiresAt: pushDevice?.jwtTokenExpiresAt,
+    appVersion: pushDevice.appVersion,
+    platform: pushDevice.platform,
+    os: pushDevice.os,
+    deviceModel: pushDevice.deviceModel,
+    isActive: pushDevice.isActive,
+    createdAt: pushDevice?.createdAt,
+    updatedAt: pushDevice?.updatedAt,
+    __v: pushDevice?.__v,
+  };
+};
 
 const NotificationPushDeviceModel =
   (mongoose.models.NotificationPushDevice as Model<INotificationPushDevice>) ||

@@ -1,6 +1,7 @@
 import { z } from "zod";
 import AppRegex from "../../utils/constants/regex.constants.js";
 import StringConstants from "../../utils/constants/strings.constants.js";
+import { PlatformsEnum } from "../../utils/constants/enum.constants.js";
 class FirebaseValidators {
     static sendNotification = {
         body: z.strictObject({
@@ -31,7 +32,56 @@ class FirebaseValidators {
             imageUrl: z.url().optional(),
             fcmTokens: z.array(z
                 .string({ error: StringConstants.PATH_REQUIRED_MESSAGE("fcmToken") })
-                .regex(AppRegex.fcmTokenRegex, { error: "Invalid FCM Token" })),
+                .regex(AppRegex.fcmTokenRegex, { error: "Invalid FCM Token ❌" })),
+        }),
+    };
+    static disableNotifications = {
+        body: z.strictObject({
+            deviceId: z
+                .string({ error: StringConstants.PATH_REQUIRED_MESSAGE("deviceId") })
+                .regex(AppRegex.deviceIdRegex, {
+                error: "Invalid deviceId, it should be a valid UUID ❌",
+            }),
+        }),
+    };
+    static refreshFcmToken = {
+        body: this.disableNotifications.body.extend({
+            fcmToken: z
+                .string({ error: StringConstants.PATH_REQUIRED_MESSAGE("fcmToken") })
+                .regex(AppRegex.fcmTokenRegex, { error: "Invalid fcmToken format ❌" }),
+        }),
+    };
+    static enableNotifications = {
+        body: this.refreshFcmToken.body.extend({
+            replaceDeviceId: z
+                .string({ error: StringConstants.PATH_REQUIRED_MESSAGE("deviceId") })
+                .regex(AppRegex.deviceIdRegex, {
+                error: "Invalid deviceId, it should be a valid UUID ❌",
+            })
+                .optional(),
+            fcmToken: z
+                .string({ error: StringConstants.PATH_REQUIRED_MESSAGE("fcmToken") })
+                .regex(AppRegex.fcmTokenRegex, { error: "Invalid fcmToken format ❌" }),
+            appVersion: z
+                .string({
+                error: StringConstants.PATH_REQUIRED_MESSAGE("appVersion"),
+            })
+                .regex(AppRegex.appVersionRegex, {
+                error: "appVersion must consists from 2 to 4 parts each separated by a dot e.g: 1.0, 1.0.0, 1.0.0.0 ❌",
+            }),
+            platform: z.enum(Object.values(PlatformsEnum)),
+            os: z
+                .string({ error: StringConstants.PATH_REQUIRED_MESSAGE("os") })
+                .regex(AppRegex.osRegex, {
+                error: "Invalid os ❌, it must be either Android, IOS, or Web followed by version number e.g Android 11",
+            }),
+            deviceModel: z
+                .string({
+                error: StringConstants.PATH_REQUIRED_MESSAGE("deviceModel"),
+            })
+                .regex(AppRegex.deviceModelRegex, {
+                error: "Invalid device model format ❌",
+            }),
         }),
     };
 }

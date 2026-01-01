@@ -1,24 +1,22 @@
 import type { Default__v, HydratedDocument, Require_id, Types } from "mongoose";
-import type { PlatfromsEnum } from "../../utils/constants/enum.constants.ts";
+import type { PlatformsEnum } from "../../utils/constants/enum.constants.ts";
 
 export interface INotificationPushDevice {
-  id: Types.ObjectId;
+  id?: Types.ObjectId | undefined;
   userId: Types.ObjectId;
   deviceId: string;
 
-  notificationsEnabled: boolean;
   fcmToken: string;
-  tokenLastUpdate?: Date;
   jwtTokenExpiresAt: Date;
 
-  platfrom: PlatfromsEnum;
+  platform: PlatformsEnum;
   appVersion: string;
   os: string;
   deviceModel: string;
 
   isActive: boolean;
-  createdAt: Date;
-  updatedAt: Date;
+  createdAt?: Date;
+  updatedAt?: Date;
 }
 
 export type FullINotificationPushDevice = Require_id<
