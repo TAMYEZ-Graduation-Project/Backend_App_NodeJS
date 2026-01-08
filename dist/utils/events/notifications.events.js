@@ -28,6 +28,8 @@ notificationEvents.subscribe({
                     },
                 },
             });
+            console.log("inside push notification");
+            console.log({ payload });
             const _notificationService = new NotificationService();
             await _notificationService.sendMultipleNotificationsAndDeactivatePushDevices({
                 ...payload,

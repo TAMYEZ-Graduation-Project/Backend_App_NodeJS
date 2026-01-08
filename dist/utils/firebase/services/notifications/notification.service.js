@@ -38,6 +38,7 @@ class NotificationService {
         if (pushDevices.length > 300) {
             throw new ServerException("Exceeded the max number of pushDevices ❌");
         }
+        console.log({ imageUrl });
         const response = await this.sendMultipleNotifications({
             title,
             body,

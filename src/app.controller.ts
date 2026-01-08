@@ -15,6 +15,7 @@ import protocolAndHostHanlder from "./utils/handlers/protocol_host.handler.ts";
 import uploadsRouter from "./uploads/uploads.routes.ts";
 import QuizModel from "./db/models/quiz.model.ts";
 import NotificationPushDeviceModel from "./db/models/notifiction_push_device.model.ts";
+import startAllCronJobs from "./utils/cron_jobs/cron_jobs.controller.ts";
 
 async function bootstrap() {
   const app: Express = express();
@@ -54,6 +55,9 @@ async function bootstrap() {
     });
     app.use(globalErrorHandler);
   }
+
+  // Initialize Cron Jobs
+  startAllCronJobs();
 
   // Start the server
   app.listen(process.env.PORT, (error) => {

@@ -78,6 +78,8 @@ class NotificationService {
       throw new ServerException("Exceeded the max number of pushDevices ❌");
     }
 
+    console.log({ imageUrl });
+
     const response = await this.sendMultipleNotifications({
       title,
       body,
@@ -99,7 +101,7 @@ class NotificationService {
 
     const _notificationPushDeviceRepository =
       new NotificationPushDeviceRepository(NotificationPushDeviceModel);
-      
+
     await _notificationPushDeviceRepository.updateMany({
       filter: {
         userId: { $in: failureDevices.map((fd) => fd?.userId) },

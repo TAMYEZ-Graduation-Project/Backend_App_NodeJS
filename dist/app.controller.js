@@ -14,6 +14,7 @@ import protocolAndHostHanlder from "./utils/handlers/protocol_host.handler.js";
 import uploadsRouter from "./uploads/uploads.routes.js";
 import QuizModel from "./db/models/quiz.model.js";
 import NotificationPushDeviceModel from "./db/models/notifiction_push_device.model.js";
+import startAllCronJobs from "./utils/cron_jobs/cron_jobs.controller.js";
 async function bootstrap() {
     const app = express();
     app.use(cors());
@@ -45,6 +46,7 @@ async function bootstrap() {
         });
         app.use(globalErrorHandler);
     }
+    startAllCronJobs();
     app.listen(process.env.PORT, (error) => {
         if (error) {
             console.log(StringConstants.ERROR_STARTING_SERVER_MESSAGE(error));

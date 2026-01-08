@@ -36,7 +36,7 @@ notificationEvents.subscribe({
           },
         },
       });
-
+      
       const _notificationService = new NotificationService();
       await _notificationService.sendMultipleNotificationsAndDeactivatePushDevices(
         {
