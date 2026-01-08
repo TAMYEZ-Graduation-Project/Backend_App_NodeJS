@@ -1,0 +1,84 @@
+abstract class EnvFields {
+  static readonly MOOD = "MOOD";
+  static readonly PORT = "PORT";
+  static readonly APP_NAME = "APP_NAME";
+  static readonly LOGO_URL = "LOGO_URL";
+  static readonly PROTOCOL = "PROTOCOL";
+  static readonly HOST = "HOST";
+
+  // Database
+  static readonly DB_URI = "DB_URI";
+
+  // Email
+  static readonly EMAIL_HOST = "EMAIL_HOST";
+  static readonly EMAIL_PORT = "EMAIL_PORT";
+  static readonly SERVICE = "SERVICE";
+  static readonly IS_SECURE = "IS_SECURE";
+  static readonly SENDER_EMAIL = "SENDER_EMAIL";
+  static readonly APP_PASS = "APP_PASS";
+
+  // Hashing
+  static readonly SALT_ROUNDS = "SALT_ROUNDS";
+
+  // Encryption
+  static readonly ENCRYPTION_KEY = "ENCRYPTION_KEY";
+  static readonly EMAIL_VERIFICATION_TOKEN_ENC_KEY =
+    "EMAIL_VERIFICATION_TOKEN_ENC_KEY";
+
+  // Token
+  static readonly ACCESS_BUSER_TOKEN_SIGNATURE = "ACCESS_BUSER_TOKEN_SIGNATURE";
+  static readonly ACCESS_BSYSTEM_TOKEN_SIGNATURE =
+    "ACCESS_BSYSTEM_TOKEN_SIGNATURE";
+  static readonly ACCESS_BSUPERSYSTEM_TOKEN_SIGNATURE =
+    "ACCESS_BSUPERSYSTEM_TOKEN_SIGNATURE";
+  static readonly ACCESS_TOKEN_EXPIRES_IN = "ACCESS_TOKEN_EXPIRES_IN";
+  static readonly EMAIL_VERIFICATION_TOKEN_KEY = "EMAIL_VERIFICATION_TOKEN_KEY";
+
+  static readonly EMAIL_VERIFICATION_TOKEN_EXPIRES_IN =
+    "EMAIL_VERIFICATION_TOKEN_EXPIRES_IN";
+
+  // OTP
+  static readonly OTP_EXPIRES_IN_MILLISECONDS = "OTP_EXPIRES_IN_MILLISECONDS";
+  static readonly WINDOW_PREFERED_TO_NEW_OTP_REQUST_IN_MILLISECONDS =
+    "WINDOW_PREFERED_TO_NEW_OTP_REQUST_IN_MILLISECONDS";
+
+  // Forget Password
+  static readonly TIME_ELAPSED_TO_RESET_PASSWORD_IN_MILLISECONDS =
+    "TIME_ELAPSED_TO_RESET_PASSWORD_IN_MILLISECONDS";
+
+  // gmail verification
+  static readonly WEB_CLIENT_IDS = "WEB_CLIENT_IDS";
+
+  // User
+  static readonly PROFILE_PICTURE_SIZE = "PROFILE_PICTURE_SIZE";
+
+  // AWS
+  static readonly AWS_BUCKET_NAME = "AWS_BUCKET_NAME";
+  static readonly AWS_REGION = "AWS_REGION";
+  static readonly AWS_ACCESS_KEY_ID = "AWS_ACCESS_KEY_ID";
+  static readonly AWS_SECRET_ACCESS_KEY = "AWS_SECRET_ACCESS_KEY";
+  static readonly AWS_PRESIGNED_URL_EXPIRES_IN_SECONDS =
+    "AWS_PRESIGNED_URL_EXPIRES_IN_SECONDS";
+
+  // Quiz
+  static readonly CAREER_ASSESSMENT_QUESTIONS_EXPIRES_IN_SECONDS =
+    "CAREER_ASSESSMENT_QUESTIONS_EXPIRES_IN_SECONDS";
+  static readonly QUIZ_QUESTIONS_EXPIRES_IN_SECONDS =
+    "QUIZ_QUESTIONS_EXPIRES_IN_SECONDS";
+  static readonly QUIZ_COOLDOWN_IN_SECONDS = "QUIZ_COOLDOWN_IN_SECONDS";
+
+  // Firebase Admin
+  static readonly FIREBASE_ADMIN_KEY = "FIREBASE_ADMIN_KEY";
+
+  // Notification
+  static readonly DAILY_MOTIVATIONAL_NOTIFICATION_IMAGE_URL =
+    "DAILY_MOTIVATIONAL_NOTIFICATION_IMAGE_URL";
+  static readonly DAILY_MOTIVATIONAL_NOTIFICATION_TIME =
+    "DAILY_MOTIVATIONAL_NOTIFICATION_TIME";
+  static readonly DAILY_MOTIVATIONAL_NOTIFICATION_TITLE =
+    "DAILY_MOTIVATIONAL_NOTIFICATION_TITLE";
+  static readonly DAILY_MOTIVATIONAL_NOTIFICATION_BODY =
+    "DAILY_MOTIVATIONAL_NOTIFICATION_BODY";
+}
+
+export default EnvFields;

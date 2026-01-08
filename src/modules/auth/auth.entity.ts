@@ -1,0 +1,9 @@
+import type { IUser } from "../../db/interfaces/user.interface.ts";
+
+export interface ILogInResponse {
+  accessToken: string;
+  notificationsEnabled?: boolean | undefined;
+  user: IUser;
+}
+
+export interface ISignUpLogInGmailResponse extends ILogInResponse {}

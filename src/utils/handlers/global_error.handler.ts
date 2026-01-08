@@ -9,6 +9,8 @@ const globalErrorHandler = async (
   res: Response,
   next: NextFunction
 ): Promise<Response> => {
+  console.log({ error });
+
   return res.status(error.statusCode || 500).json({
     success: false,
     error: {

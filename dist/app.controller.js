@@ -9,6 +9,12 @@ import { ProjectMoodsEnum } from "./utils/constants/enum.constants.js";
 import StringConstants from "./utils/constants/strings.constants.js";
 import globalErrorHandler from "./utils/handlers/global_error.handler.js";
 import RoutePaths from "./utils/constants/route_paths.constants.js";
+import UserModel from "./db/models/user.model.js";
+import protocolAndHostHanlder from "./utils/handlers/protocol_host.handler.js";
+import uploadsRouter from "./uploads/uploads.routes.js";
+import QuizModel from "./db/models/quiz.model.js";
+import NotificationPushDeviceModel from "./db/models/notifiction_push_device.model.js";
+import startAllCronJobs from "./utils/cron_jobs/cron_jobs.controller.js";
 async function bootstrap() {
     const app = express();
     app.use(cors());
@@ -26,7 +32,12 @@ async function bootstrap() {
         });
     }
     else {
+        await UserModel.syncIndexes();
+        await QuizModel.syncIndexes();
+        await NotificationPushDeviceModel.syncIndexes();
+        app.use(protocolAndHostHanlder);
         app.use(express.json());
+        app.use(RoutePaths.uploads, uploadsRouter);
         app.use([RoutePaths.SLASH_PATH, RoutePaths.API_V1_PATH], modulesRouter);
         app.use(RoutePaths.ALL_PATH, (req, res) => {
             res.status(404).json({
@@ -35,6 +46,7 @@ async function bootstrap() {
         });
         app.use(globalErrorHandler);
     }
+    startAllCronJobs();
     app.listen(process.env.PORT, (error) => {
         if (error) {
             console.log(StringConstants.ERROR_STARTING_SERVER_MESSAGE(error));

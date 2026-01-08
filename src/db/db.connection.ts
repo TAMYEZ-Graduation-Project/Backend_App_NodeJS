@@ -3,7 +3,8 @@ import StringConstants from "../utils/constants/strings.constants.ts";
 
 async function connnectToDB(): Promise<boolean> {
   try {
-    await mongoose.connect(process.env.DB_URI!);
+    const result = await mongoose.connect(process.env.DB_URI!);
+    console.log(result.models);
     console.log(StringConstants.CONNECTED_TO_DB_MESSAGE);
     return true;
   } catch (e) {

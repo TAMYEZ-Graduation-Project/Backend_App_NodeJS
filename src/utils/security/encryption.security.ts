@@ -1,4 +1,4 @@
-import { AES } from "crypto-js";
+import CryptoJS from "crypto-js";
 
 class EncryptionSecurityUtil {
   static encryptText = ({
@@ -8,17 +8,23 @@ class EncryptionSecurityUtil {
     plainText: string;
     secretKey?: string;
   }): string => {
-    return AES.encrypt(plainText, secretKey!).toString();
+    return CryptoJS.AES.encrypt(plainText, secretKey!).toString();
   };
 
   static decryptText = ({
     cipherText,
-    secreteKey = process.env.ENCRYPTION_KEY,
+    secretKey = process.env.ENCRYPTION_KEY,
   }: {
     cipherText: string;
-    secreteKey?: string;
+    secretKey?: string;
   }): string => {
-    return AES.decrypt(cipherText, secreteKey!).toString();
+    return CryptoJS.AES.decrypt(cipherText, secretKey!).toString(
+      CryptoJS.enc.Utf8
+    );
+  };
+
+  static isEncrypted = ({ text }: { text: string }) => {
+    return typeof text === "string" && text.startsWith("U2FsdGVkX1");
   };
 }
 
