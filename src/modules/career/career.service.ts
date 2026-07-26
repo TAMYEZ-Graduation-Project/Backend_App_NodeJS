@@ -59,6 +59,7 @@ import {
   CareerResourceAppliesToEnum,
   QuestionTypesEnum,
   QuizTypesEnum,
+  UserLevelsEnum,
 } from "../../utils/constants/enum.constants.ts";
 import { startSession, Types, type QueryFilter } from "mongoose";
 import type {
@@ -80,10 +81,12 @@ import type {
   FullIQuestion,
   HIQuestion,
 } from "../../db/interfaces/quiz_attempt.interface.ts";
-import type { IAIModelCheckCareerAssessmentQuestionsRequest } from "../../utils/constants/interface.constants.ts";
+import type {
+  IAIModelCheckCareerAssessmentQuestionsRequest,
+  IAIModelCheckCareerAssessmentQuestionsResponse,
+} from "../../utils/constants/interface.constants.ts";
 import UserProgressService from "../../utils/services/user_progress.service.ts";
 import type { FullIRoadmapStep } from "../../db/interfaces/roadmap_step.interface.ts";
-import { QuizApisManager } from "../quiz/index.ts";
 
 class CareerService {
   private readonly _careerRepository = new CareerRepository(CareerModel);
@@ -107,7 +110,7 @@ class CareerService {
     this._userCareerProgressRepository,
   );
 
-  private _quizApisManager = new QuizApisManager();
+  // private _quizApisManager = new QuizApisManager();
 
   createCareer = async (
     req: Request,
@@ -638,8 +641,7 @@ class CareerService {
     });
   };
 
-  /*
-  aiModelCheckCareerAssessmentQuestions = ({
+  _checkCareerAssessmentQuestions = ({
     careerList,
     answers,
   }: IAIModelCheckCareerAssessmentQuestionsRequest): Promise<IAIModelCheckCareerAssessmentQuestionsResponse> => {
@@ -650,8 +652,8 @@ class CareerService {
         for (let i = 0; i < 3; i++) {
           const index = Math.floor(Math.random() * careerList.length);
           if (
-            suggestedCareers.find((c) =>
-              c.careerId.equals(careerList[index]!.careerId),
+            suggestedCareers.find(
+              (c) => c.careerId === careerList[index]!.careerId,
             )
           )
             continue; // avoid duplicates
@@ -670,7 +672,7 @@ class CareerService {
         });
       }, 1500);
     });
-  };*/
+  };
 
   checkCareerAssessment = async (
     req: Request,
@@ -763,15 +765,25 @@ class CareerService {
         "No careers found to suggest from, please try again later ❌",
       );
     }
-    const aiModelResponse =
-      await this._quizApisManager.checkCareerAssessmentQuestions({
-        careerList: careers.map((c) => ({
-          careerId: c._id.toString(),
-          title: c.title,
-          summary: c.summary,
-        })),
-        answers: answersForAI,
-      });
+
+    const aiModelResponse = await this._checkCareerAssessmentQuestions({
+      careerList: careers.map((c) => ({
+        careerId: c._id.toString(),
+        title: c.title,
+        summary: c.summary,
+      })),
+      answers: answersForAI,
+    });
+
+    // const aiModelResponse =
+    //   await this._quizApisManager.checkCareerAssessmentQuestions({
+    //     careerList: careers.map((c) => ({
+    //       careerId: c._id.toString(),
+    //       title: c.title,
+    //       summary: c.summary,
+    //     })),
+    //     answers: answersForAI,
+    //   });
 
     const suggestedCareerIds = new Set(
       aiModelResponse.suggestedCareers.map((c) => c.careerId),
@@ -793,7 +805,12 @@ class CareerService {
           filter: { userId: req.user!._id! },
           replacement: {
             userId: req.user!._id!,
-            suggestions: aiModelResponse.suggestedCareers,
+            suggestions: aiModelResponse.suggestedCareers.map((c) => ({
+              careerId: Types.ObjectId.createFromHexString(c.careerId),
+              title: c.title,
+              reason: c.reason,
+              confidence: c.confidence,
+            })),
             userLevel: aiModelResponse.user_level,
             expiresAt: new Date(Date.now() + 30 * 60 * 1000), // expire after 30 minutes
             createdAt: new Date(),

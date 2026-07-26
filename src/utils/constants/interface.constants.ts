@@ -124,7 +124,7 @@ export interface IAIModelCheckCareerAssessmentQuestionsRequest {
 export interface IAIModelCheckCareerAssessmentQuestionsResponse {
   user_level: UserLevelsEnum;
   suggestedCareers: {
-    careerId: Types.ObjectId;
+    careerId: string;
     title: string;
     reason: string;
     confidence: number;

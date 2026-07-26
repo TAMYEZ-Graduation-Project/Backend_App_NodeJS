@@ -11,7 +11,7 @@ import makeCompleter from "../../utils/completer/make.completer.js";
 import SavedQuizRepository from "../../db/repositories/saved_quiz.repository.js";
 import QuizCooldownRepository from "../../db/repositories/quiz_cooldown.repository.js";
 import UserProgressService from "../../utils/services/user_progress.service.js";
-import QuizApisManager from "./quiz.apis.js";
+import pause from "../../utils/pause/code.pause.js";
 class QuizService {
     _quizRepository = new QuizRepository(QuizModel);
     _quizAttemptRepository = new QuizAttemptRepository(QuizAttemptModel);
@@ -20,7 +20,6 @@ class QuizService {
     _roadmapStepRepository = new RoadmapStepRepository(RoadmapStepModel);
     _userCareerProgressRepository = new UserCareerProgressRepository(UserCareerProgressModel);
     _userProgressService = new UserProgressService(this._roadmapStepRepository, this._userCareerProgressRepository);
-    _quizApisManager = new QuizApisManager();
     createQuiz = async (req, res) => {
         const { title, description, questionsNumber, type, duration, tags } = req
             .validationResult.body;
@@ -206,6 +205,241 @@ class QuizService {
             });
         };
     };
+    _generateRoadmapStepQuizQuestions = async ({ topic, career, num_questions, level, }) => {
+        await pause(1500);
+        return {
+            questions: [
+                {
+                    type: "mcq-single",
+                    text: "Which data structure uses LIFO (Last In, First Out) principle?",
+                    options: [
+                        { id: "optA", text: "Queue" },
+                        { id: "optB", text: "Stack" },
+                        { id: "optC", text: "Array" },
+                        { id: "optD", text: "Linked List" },
+                    ],
+                    correctAnswer: ["optB"],
+                    explanation: "A stack follows the LIFO principle, meaning the last element added is the first to be removed.",
+                },
+                {
+                    type: "mcq-single",
+                    text: "What is the time complexity of binary search in a sorted array?",
+                    options: [
+                        { id: "optA", text: "O(n)" },
+                        { id: "optB", text: "O(log n)" },
+                        { id: "optC", text: "O(n log n)" },
+                        { id: "optD", text: "O(1)" },
+                    ],
+                    correctAnswer: ["optB"],
+                    explanation: "Binary search halves the search space each time, resulting in logarithmic complexity O(log n).",
+                },
+                {
+                    type: "mcq-multi",
+                    text: "Which of the following are programming paradigms?",
+                    options: [
+                        { id: "optA", text: "Object-Oriented" },
+                        { id: "optB", text: "Functional" },
+                        { id: "optC", text: "Procedural" },
+                        { id: "optD", text: "Relational" },
+                    ],
+                    correctAnswer: [
+                        "optA",
+                        "optB",
+                        "optC",
+                    ],
+                    explanation: "Object-Oriented, Functional, and Procedural are paradigms; Relational refers to databases, not a paradigm.",
+                },
+                {
+                    type: "written",
+                    text: "Explain the difference between TCP and UDP.",
+                },
+                {
+                    type: "mcq-single",
+                    text: "Which algorithm is commonly used for shortest path in a graph?",
+                    options: [
+                        { id: "optA", text: "Dijkstra's Algorithm" },
+                        { id: "optB", text: "Merge Sort" },
+                        { id: "optC", text: "DFS" },
+                        { id: "optD", text: "Bellman-Ford" },
+                    ],
+                    correctAnswer: ["optA"],
+                    explanation: "Dijkstra's algorithm efficiently finds the shortest path from a source to all other nodes in a weighted graph.",
+                },
+                {
+                    type: "mcq-single",
+                    text: "What does SQL stand for?",
+                    options: [
+                        { id: "optA", text: "Structured Query Language" },
+                        { id: "optB", text: "Simple Query Language" },
+                        { id: "optC", text: "Sequential Query Language" },
+                        { id: "optD", text: "Standard Query Language" },
+                    ],
+                    correctAnswer: ["optA"],
+                    explanation: "SQL stands for Structured Query Language, used for managing and querying relational databases.",
+                },
+                {
+                    type: "mcq-multi",
+                    text: "Which of the following are NoSQL databases?",
+                    options: [
+                        { id: "optA", text: "MongoDB" },
+                        { id: "optB", text: "PostgreSQL" },
+                        { id: "optC", text: "Cassandra" },
+                        { id: "optD", text: "Redis" },
+                    ],
+                    correctAnswer: ["optA", "optC", "optD"],
+                    explanation: "MongoDB, Cassandra, and Redis are NoSQL databases; PostgreSQL is a relational database.",
+                },
+                {
+                    type: "written",
+                    text: "Describe the concept of polymorphism in object-oriented programming.",
+                },
+                {
+                    type: "mcq-single",
+                    text: "Which of these is NOT a valid HTTP method?",
+                    options: [
+                        { id: "optA", text: "GET" },
+                        { id: "optB", text: "POST" },
+                        { id: "optC", text: "FETCH" },
+                        { id: "optD", text: "DELETE" },
+                    ],
+                    correctAnswer: ["optC"],
+                    explanation: "GET, POST, and DELETE are valid HTTP methods; FETCH is not an HTTP method but a JavaScript API.",
+                },
+                {
+                    type: "written",
+                    text: "What is the difference between supervised and unsupervised learning in machine learning?",
+                },
+            ],
+        };
+    };
+    _generateCareerAssessmentQuestions = async ({ num_questions, language, }) => {
+        await pause(1500);
+        return {
+            questions: [
+                {
+                    type: "mcq-single",
+                    text: "Which activity sounds the most enjoyable to you?",
+                    options: [
+                        {
+                            id: "optA",
+                            text: "Designing user interfaces and experiences",
+                        },
+                        {
+                            id: "optB",
+                            text: "Building APIs and business logic",
+                        },
+                        {
+                            id: "optC",
+                            text: "Analyzing data and finding patterns",
+                        },
+                        {
+                            id: "optD",
+                            text: "Securing systems and investigating threats",
+                        },
+                    ],
+                },
+                {
+                    type: "mcq-single",
+                    text: "What type of problem do you enjoy solving the most?",
+                    options: [
+                        {
+                            id: "optA",
+                            text: "Visual and design challenges",
+                        },
+                        {
+                            id: "optB",
+                            text: "Logic and system architecture problems",
+                        },
+                        { id: "optC", text: "Data-driven questions" },
+                        {
+                            id: "optD",
+                            text: "Reliability and security issues",
+                        },
+                    ],
+                },
+                {
+                    type: "mcq-multi",
+                    text: "Which tasks would you enjoy doing regularly?",
+                    options: [
+                        {
+                            id: "optA",
+                            text: "Creating mobile or web applications",
+                        },
+                        { id: "optB", text: "Working with databases" },
+                        {
+                            id: "optC",
+                            text: "Training AI or machine learning models",
+                        },
+                        {
+                            id: "optD",
+                            text: "Managing cloud infrastructure",
+                        },
+                    ],
+                },
+                {
+                    type: "written",
+                    text: "Describe a technology project or achievement you're proud of.",
+                },
+                {
+                    type: "mcq-single",
+                    text: "Which work environment appeals to you the most?",
+                    options: [
+                        { id: "optA", text: "Creative and collaborative" },
+                        { id: "optB", text: "Structured and analytical" },
+                        { id: "optC", text: "Research-oriented" },
+                        { id: "optD", text: "Fast-paced and operational" },
+                    ],
+                },
+                {
+                    type: "mcq-single",
+                    text: "What would you rather spend a weekend learning?",
+                    options: [
+                        { id: "optA", text: "UI/UX design tools" },
+                        {
+                            id: "optB",
+                            text: "Backend frameworks and APIs",
+                        },
+                        {
+                            id: "optC",
+                            text: "Machine learning techniques",
+                        },
+                        {
+                            id: "optD",
+                            text: "Cloud and DevOps technologies",
+                        },
+                    ],
+                },
+                {
+                    type: "mcq-multi",
+                    text: "Which skills would you like to develop?",
+                    options: [
+                        { id: "optA", text: "User experience design" },
+                        { id: "optB", text: "System architecture" },
+                        { id: "optC", text: "Data analysis" },
+                        { id: "optD", text: "Cybersecurity" },
+                    ],
+                },
+                {
+                    type: "written",
+                    text: "What motivates you most when working on a project?",
+                },
+                {
+                    type: "mcq-single",
+                    text: "If you joined a software team today, which role would you be most curious about?",
+                    options: [
+                        { id: "optA", text: "Frontend Developer" },
+                        { id: "optB", text: "Backend Developer" },
+                        { id: "optC", text: "Data Scientist" },
+                        { id: "optD", text: "DevOps Engineer" },
+                    ],
+                },
+                {
+                    type: "written",
+                    text: "Where do you see yourself in technology in the next five years?",
+                },
+            ],
+        };
+    };
     getQuizQuestions = async (req, res) => {
         const { quizId, roadmapStepId } = req.params;
         const { discardActiveAttempt } = req.validationResult
@@ -292,7 +526,7 @@ class QuizService {
             }))) {
             throw new BadRequestException("There is an active attempt on this quiz ⚠️ Do you want to discard it?");
         }
-        const generatedQuestions = await this._quizApisManager.getRoadmapStepQuestions({
+        const generatedQuestions = await this._generateRoadmapStepQuizQuestions({
             topic: roadmapStep.title,
             career: roadmapStep.careerId.title,
             num_questions: quiz.questionsNumber,
@@ -358,7 +592,7 @@ class QuizService {
             }))) {
             throw new BadRequestException("There is an active attempt on this quiz ⚠️ Do you want to discard it?");
         }
-        const generatedQuestions = await this._quizApisManager.getCareerAssessmentQustions({
+        const generatedQuestions = await this._generateCareerAssessmentQuestions({
             num_questions: quiz.questionsNumber,
             language: "English",
         });
@@ -396,13 +630,72 @@ class QuizService {
         });
     };
     _checkWrittenQuestionsAnswers = async ({ resolve, reject, payload, }) => {
-        try {
-            const response = await this._quizApisManager.checkRoadmapWrittenAnswers(payload);
-            resolve(response);
-        }
-        catch (e) {
-            reject(e);
-        }
+        return new Promise((res) => {
+            setTimeout(() => {
+                const evaluations = [];
+                let totalScore = 0;
+                for (const answer of payload.answers) {
+                    const studentAnswer = answer.answer.trim();
+                    let score = 0;
+                    let feedback = "";
+                    if (!studentAnswer) {
+                        score = 0;
+                        feedback = "No answer was provided.";
+                    }
+                    else if (studentAnswer.toLowerCase().includes("correct")) {
+                        score = 100;
+                        feedback =
+                            "Excellent answer. The main concept was identified correctly.";
+                    }
+                    else if (studentAnswer.length > 100) {
+                        score = 85;
+                        feedback =
+                            "Good answer with sufficient detail. Some refinement could improve clarity.";
+                    }
+                    else if (studentAnswer.length > 50) {
+                        score = 70;
+                        feedback =
+                            "Reasonable answer. Covers some important points but lacks depth.";
+                    }
+                    else {
+                        score = 40;
+                        feedback = "Answer is too brief and misses important details.";
+                    }
+                    totalScore += score;
+                    evaluations.push({
+                        question: answer.question,
+                        student_answer: answer.answer,
+                        score,
+                        feedback,
+                    });
+                }
+                const overallScore = evaluations.length > 0
+                    ? Math.round(totalScore / evaluations.length)
+                    : 0;
+                let overallFeedback = "";
+                if (overallScore >= 90) {
+                    overallFeedback = "Excellent performance across written questions.";
+                }
+                else if (overallScore >= 75) {
+                    overallFeedback =
+                        "Good overall performance with solid understanding of the concepts.";
+                }
+                else if (overallScore >= 50) {
+                    overallFeedback =
+                        "Average performance. Review some topics to strengthen understanding.";
+                }
+                else {
+                    overallFeedback =
+                        "Performance needs improvement. Consider revisiting the material.";
+                }
+                resolve({
+                    evaluations,
+                    overall_score: overallScore,
+                    overall_feedback: overallFeedback,
+                });
+                res();
+            }, 1500);
+        });
     };
     checkQuizAnswers = async (req, res) => {
         const { quizAttemptId } = req.params;
